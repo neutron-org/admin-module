@@ -2,11 +2,12 @@ package keeper
 
 import (
 	"fmt"
+	"time"
+
 	"github.com/cosmos/admin-module/x/adminmodule/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
-	"time"
 )
 
 // SubmitProposal create new proposal given a content
@@ -26,18 +27,20 @@ func (k Keeper) SubmitProposal(ctx sdk.Context, content govtypes.Content) (govty
 		return govtypes.Proposal{}, err
 	}
 
-	submitTime := ctx.BlockHeader().Time
+	headerTime := ctx.BlockHeader().Time
 
-	proposal, err := govtypes.NewProposal(content, proposalID, submitTime, time.Now().Add(2*time.Hour))
+	// depositEndTime would not be used
+	proposal, err := govtypes.NewProposal(content, proposalID, headerTime, headerTime)
 	if err != nil {
 		return govtypes.Proposal{}, err
 	}
 
+	proposal.VotingEndTime = headerTime
 	k.SetProposal(ctx, proposal)
-	k.InsertActiveProposalQueue(ctx, proposalID, submitTime.Add(2*time.Second)) // TODO hardcode
+	// entTime is set to headerTime, because the proposal should be processed right after it is submitted
+	// since there is no voting
+	k.InsertActiveProposalQueue(ctx, proposalID, headerTime)
 	k.SetProposalID(ctx, proposalID+1)
-
-	// TODO submit event?
 
 	return proposal, nil
 }
@@ -122,7 +125,7 @@ func (k Keeper) ActiveProposalQueueIterator(ctx sdk.Context, endTime time.Time) 
 }
 
 func (k Keeper) MarshalProposal(proposal govtypes.Proposal) ([]byte, error) {
-	bz, err := k.cdc.MarshalBinaryBare(&proposal)
+	bz, err := k.cdc.Marshal(&proposal)
 	if err != nil {
 		return nil, err
 	}
@@ -130,7 +133,7 @@ func (k Keeper) MarshalProposal(proposal govtypes.Proposal) ([]byte, error) {
 }
 
 func (k Keeper) UnmarshalProposal(bz []byte, proposal *govtypes.Proposal) error {
-	err := k.cdc.UnmarshalBinaryBare(bz, proposal)
+	err := k.cdc.Unmarshal(bz, proposal)
 	if err != nil {
 		return err
 	}

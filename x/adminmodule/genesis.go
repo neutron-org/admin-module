@@ -12,7 +12,7 @@ func InitGenesis(ctx sdk.Context, k keeper.Keeper, genState types.GenesisState) 
 	for _, admin := range genState.GetAdmins() {
 		k.SetAdmin(ctx, admin)
 	}
-	k.SetProposalID(ctx, 1) // TODO add StartingProposalId to genesis
+	k.SetProposalID(ctx, 1)
 }
 
 // ExportGenesis returns the capability module's exported genesis.

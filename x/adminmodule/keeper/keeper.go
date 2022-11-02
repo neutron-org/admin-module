@@ -14,26 +14,29 @@ import (
 
 type (
 	Keeper struct {
-		cdc      codec.Marshaler
-		storeKey sdk.StoreKey
-		memKey   sdk.StoreKey
-		rtr      govtypes.Router
+		cdc                       codec.Codec
+		storeKey                  sdk.StoreKey
+		memKey                    sdk.StoreKey
+		rtr                       govtypes.Router
+		IsProposalTypeWhitelisted func(govtypes.Content) bool
 		// this line is used by starport scaffolding # ibc/keeper/attribute
 	}
 )
 
 func NewKeeper(
-	cdc codec.Marshaler,
+	cdc codec.Codec,
 	storeKey,
 	memKey sdk.StoreKey,
 	rtr govtypes.Router,
+	isProposalTypeWhitelisted func(govtypes.Content) bool,
 	// this line is used by starport scaffolding # ibc/keeper/parameter
 ) *Keeper {
 	return &Keeper{
-		cdc:      cdc,
-		storeKey: storeKey,
-		memKey:   memKey,
-		rtr:      rtr,
+		cdc:                       cdc,
+		storeKey:                  storeKey,
+		memKey:                    memKey,
+		rtr:                       rtr,
+		IsProposalTypeWhitelisted: isProposalTypeWhitelisted,
 		// this line is used by starport scaffolding # ibc/keeper/return
 	}
 }

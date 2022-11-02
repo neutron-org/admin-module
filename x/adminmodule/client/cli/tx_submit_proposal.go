@@ -49,7 +49,7 @@ func CmdSubmitProposal() *cobra.Command {
 Proposal title, description, type and can be given directly or through a proposal JSON file.
 
 Example:
-$ %s adminmodule adminmodule submit-proposal --proposal="path/to/proposal.json" --from mykey
+$ %s adminmodule submit-proposal --proposal="path/to/proposal.json" --from mykey
 
 Where proposal.json contains:
 
