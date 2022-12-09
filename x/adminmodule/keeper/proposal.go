@@ -2,9 +2,9 @@ package keeper
 
 import (
 	"fmt"
-	"time"
 
 	"github.com/cosmos/admin-module/x/adminmodule/types"
+	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
@@ -29,17 +29,14 @@ func (k Keeper) SubmitProposal(ctx sdk.Context, content govtypes.Content) (govty
 
 	headerTime := ctx.BlockHeader().Time
 
-	// depositEndTime would not be used
+	// submitTime and depositEndTime would not be used
 	proposal, err := govtypes.NewProposal(content, proposalID, headerTime, headerTime)
 	if err != nil {
 		return govtypes.Proposal{}, err
 	}
 
-	proposal.VotingEndTime = headerTime
 	k.SetProposal(ctx, proposal)
-	// entTime is set to headerTime, because the proposal should be processed right after it is submitted
-	// since there is no voting
-	k.InsertActiveProposalQueue(ctx, proposalID, headerTime)
+	k.InsertActiveProposalQueue(ctx, proposalID)
 	k.SetProposalID(ctx, proposalID+1)
 
 	return proposal, nil
@@ -87,26 +84,26 @@ func (k Keeper) GetProposal(ctx sdk.Context, proposalID uint64) (govtypes.Propos
 	return proposal, true
 }
 
-// InsertActiveProposalQueue inserts a ProposalID into the active proposal queue at endTime
-func (k Keeper) InsertActiveProposalQueue(ctx sdk.Context, proposalID uint64, endTime time.Time) {
+// InsertActiveProposalQueue inserts a ProposalID into the active proposal queue
+func (k Keeper) InsertActiveProposalQueue(ctx sdk.Context, proposalID uint64) {
 	store := ctx.KVStore(k.storeKey)
-	store.Set(types.ActiveProposalQueueKey(proposalID, endTime), types.GetProposalIDBytes(proposalID))
+	store.Set(types.ActiveProposalQueueKey(proposalID), types.GetProposalIDBytes(proposalID))
 }
 
 // RemoveFromActiveProposalQueue removes a proposalID from the Active Proposal Queue
-func (k Keeper) RemoveFromActiveProposalQueue(ctx sdk.Context, proposalID uint64, endTime time.Time) {
+func (k Keeper) RemoveFromActiveProposalQueue(ctx sdk.Context, proposalID uint64) {
 	store := ctx.KVStore(k.storeKey)
-	store.Delete(types.ActiveProposalQueueKey(proposalID, endTime))
+	store.Delete(types.ActiveProposalQueueKey(proposalID))
 }
 
 // IterateActiveProposalsQueue iterates over the proposals in the active proposal queue
 // and performs a callback function
-func (k Keeper) IterateActiveProposalsQueue(ctx sdk.Context, endTime time.Time, cb func(proposal govtypes.Proposal) (stop bool)) {
-	iterator := k.ActiveProposalQueueIterator(ctx, endTime)
+func (k Keeper) IterateActiveProposalsQueue(ctx sdk.Context, cb func(proposal govtypes.Proposal) (stop bool)) {
+	iterator := k.ActiveProposalQueueIterator(ctx)
 
 	defer iterator.Close()
 	for ; iterator.Valid(); iterator.Next() {
-		proposalID, _ := types.SplitActiveProposalQueueKey(iterator.Key())
+		proposalID := types.GetProposalIDFromBytes(iterator.Value())
 		proposal, found := k.GetProposal(ctx, proposalID)
 		if !found {
 			panic(fmt.Sprintf("proposal %d does not exist", proposalID))
@@ -118,10 +115,10 @@ func (k Keeper) IterateActiveProposalsQueue(ctx sdk.Context, endTime time.Time, 
 	}
 }
 
-// ActiveProposalQueueIterator returns an sdk.Iterator for all the proposals in the Active Queue that expire by endTime
-func (k Keeper) ActiveProposalQueueIterator(ctx sdk.Context, endTime time.Time) sdk.Iterator {
-	store := ctx.KVStore(k.storeKey)
-	return store.Iterator(types.ActiveProposalQueuePrefix, sdk.PrefixEndBytes(types.ActiveProposalByTimeKey(endTime)))
+// ActiveProposalQueueIterator returns an sdk.Iterator for all the proposals in the Active Queue
+func (k Keeper) ActiveProposalQueueIterator(ctx sdk.Context) sdk.Iterator {
+	prefixStore := prefix.NewStore(ctx.KVStore(k.storeKey), types.ActiveProposalQueuePrefix)
+	return prefixStore.Iterator(nil, nil)
 }
 
 func (k Keeper) MarshalProposal(proposal govtypes.Proposal) ([]byte, error) {

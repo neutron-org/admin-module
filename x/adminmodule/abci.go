@@ -17,8 +17,7 @@ func EndBlocker(ctx sdk.Context, keeper keeper.Keeper) {
 
 	logger := keeper.Logger(ctx)
 
-	// fetch active proposals whose voting periods have ended (are passed the block time)
-	keeper.IterateActiveProposalsQueue(ctx, ctx.BlockHeader().Time, func(proposal govtypes.Proposal) bool {
+	keeper.IterateActiveProposalsQueue(ctx, func(proposal govtypes.Proposal) bool {
 		var logMsg, tagValue string
 
 		handler := keeper.Router().GetRoute(proposal.ProposalRoute())
@@ -48,7 +47,7 @@ func EndBlocker(ctx sdk.Context, keeper keeper.Keeper) {
 		}
 
 		keeper.SetProposal(ctx, proposal)
-		keeper.RemoveFromActiveProposalQueue(ctx, proposal.ProposalId, proposal.VotingEndTime)
+		keeper.RemoveFromActiveProposalQueue(ctx, proposal.ProposalId)
 
 		keeper.AddToArchive(ctx, proposal)
 
