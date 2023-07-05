@@ -13,7 +13,7 @@ ldflags = -X github.com/cosmos/cosmos-sdk/version.AppName=admin-moduled \
 protoVer=0.11.6
 protoImageName=ghcr.io/cosmos/proto-builder:$(protoVer)
 protoImage=docker run --rm -v $(CURDIR):/workspace --workdir /workspace $(protoImageName)
-proto-gen1:
+proto-gen:
 	@echo "Generating Protobuf files"
 	@$(protoImage) sh ./scripts/protocgen.sh
 

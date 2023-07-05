@@ -53,14 +53,6 @@ func (m *MsgSubmitProposal) SetContent(content govtypesv1b1.Content) error {
 	return nil
 }
 
-func (m *MsgSubmitProposal) Route() string {
-	return RouterKey
-}
-
-func (m *MsgSubmitProposal) Type() string {
-	return "SubmitProposal"
-}
-
 func (m *MsgSubmitProposal) GetSigners() []sdk.AccAddress {
 	proposer, err := sdk.AccAddressFromBech32(m.Proposer)
 	if err != nil {

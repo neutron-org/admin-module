@@ -14,14 +14,6 @@ func NewMsgAddAdmin(creator, admin sdk.AccAddress) *MsgAddAdmin {
 	}
 }
 
-func (msg *MsgAddAdmin) Route() string {
-	return RouterKey
-}
-
-func (msg *MsgAddAdmin) Type() string {
-	return "AddAdmin"
-}
-
 func (msg *MsgAddAdmin) GetSigners() []sdk.AccAddress {
 	creator, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
