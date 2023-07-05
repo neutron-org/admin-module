@@ -3,10 +3,19 @@ CHAIN_ID=adminmodule
 CHAIN_HOME=$(HOME)/.admin-module
 STARPORT_HOME=$(HOME)/.starport
 STARPORT_VERSION=0.17.3
-COSMOS_SDK_VERSION=$(shell cat go.mod | grep cosmos-sdk | cut -d ' ' -f2 | sed 's/^v//')
+COSMOS_SDK_VERSION=$(shell cat go.mod | grep 'cosmos-sdk v' | cut -d ' ' -f2 | sed 's/^v//')
 
 ldflags = -X github.com/cosmos/cosmos-sdk/version.AppName=admin-moduled \
 		  -X github.com/cosmos/cosmos-sdk/version.Version=$(COSMOS_SDK_VERSION)
+
+
+
+protoVer=0.11.6
+protoImageName=ghcr.io/cosmos/proto-builder:$(protoVer)
+protoImage=docker run --rm -v $(CURDIR):/workspace --workdir /workspace $(protoImageName)
+proto-gen1:
+	@echo "Generating Protobuf files"
+	@$(protoImage) sh ./scripts/protocgen.sh
 
 .PHONY: version
 version:
@@ -18,7 +27,7 @@ version:
 
 .PHONY: build
 build:
-	go build -ldflags '$(ldflags)' -o bin/admin-moduled cmd/admin-moduled/main.go
+	go build -o ./bin/admin-moduled -ldflags '$(ldflags)' ./cmd/admin-moduled/
 
 .PHONY: maybebuild
 maybebuild:
