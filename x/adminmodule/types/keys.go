@@ -23,6 +23,8 @@ const (
 	AdminKey = "Admin-"
 
 	ArchiveKey = "Archive-"
+
+	ArchiveLegacyKey = "Archive-"
 )
 
 var (

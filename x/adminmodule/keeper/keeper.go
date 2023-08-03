@@ -4,12 +4,13 @@ import (
 	"fmt"
 
 	"github.com/cometbft/cometbft/libs/log"
+	"github.com/cosmos/cosmos-sdk/baseapp"
 
 	"github.com/cosmos/admin-module/x/adminmodule/types"
 	"github.com/cosmos/cosmos-sdk/codec"
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	govv1types "github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
+	govv1beta1types "github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
 	// this line is used by starport scaffolding # ibc/keeper/import
 )
 
@@ -18,8 +19,9 @@ type (
 		cdc                       codec.Codec
 		storeKey                  storetypes.StoreKey
 		memKey                    storetypes.StoreKey
-		rtr                       govv1types.Router
-		IsProposalTypeWhitelisted func(govv1types.Content) bool
+		rtr                       govv1beta1types.Router
+		msgServiceRouter          *baseapp.MsgServiceRouter
+		IsProposalTypeWhitelisted func(govv1beta1types.Content) bool
 		// this line is used by starport scaffolding # ibc/keeper/attribute
 	}
 )
@@ -28,8 +30,9 @@ func NewKeeper(
 	cdc codec.Codec,
 	storeKey,
 	memKey storetypes.StoreKey,
-	rtr govv1types.Router,
-	isProposalTypeWhitelisted func(govv1types.Content) bool,
+	rtr govv1beta1types.Router,
+	msgServiceRouter *baseapp.MsgServiceRouter,
+	isProposalTypeWhitelisted func(govv1beta1types.Content) bool,
 	// this line is used by starport scaffolding # ibc/keeper/parameter
 ) *Keeper {
 	return &Keeper{
@@ -37,14 +40,20 @@ func NewKeeper(
 		storeKey:                  storeKey,
 		memKey:                    memKey,
 		rtr:                       rtr,
+		msgServiceRouter:          msgServiceRouter,
 		IsProposalTypeWhitelisted: isProposalTypeWhitelisted,
 		// this line is used by starport scaffolding # ibc/keeper/return
 	}
 }
 
-// Router returns the adminmodule Keeper's Router
-func (k Keeper) Router() govv1types.Router {
+// RouterLegacy returns the adminmodule Keeper's govtypeRouter
+func (k Keeper) RouterLegacy() govv1beta1types.Router {
 	return k.rtr
+}
+
+// Router returns the adminmodule Keeper's Router
+func (k Keeper) Router() *baseapp.MsgServiceRouter {
+	return k.msgServiceRouter
 }
 
 func (k Keeper) Logger(ctx sdk.Context) log.Logger {

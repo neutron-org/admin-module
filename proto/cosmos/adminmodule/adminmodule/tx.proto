@@ -31,6 +31,23 @@ message MsgAddAdmin {
 message MsgAddAdminResponse {
 }
 
+// MsgSubmitProposalLegacy defines an sdk.Msg type that supports submitting arbitrary
+// proposal Content.
+message MsgSubmitProposalLegacy {
+  option (gogoproto.equal)            = false;
+  option (gogoproto.goproto_stringer) = false;
+  option (gogoproto.stringer)         = false;
+  option (gogoproto.goproto_getters)  = false;
+
+  google.protobuf.Any content                       = 1 [(cosmos_proto.accepts_interface) = "Content"];
+  string proposer = 2;
+}
+
+// MsgSubmitProposalLegacyResponse defines the Msg/SubmitProposalLegacy response type.
+message MsgSubmitProposalLegacyResponse {
+  uint64 proposal_id = 1 [(gogoproto.jsontag) = "proposal_id", (gogoproto.moretags) = "yaml:\"proposal_id\""];
+}
+
 // MsgSubmitProposal defines an sdk.Msg type that supports submitting arbitrary
 // proposal Content.
 message MsgSubmitProposal {
@@ -39,7 +56,8 @@ message MsgSubmitProposal {
   option (gogoproto.stringer)         = false;
   option (gogoproto.goproto_getters)  = false;
 
-  google.protobuf.Any content                       = 1 [(cosmos_proto.accepts_interface) = "Content"];
+  // messages are the arbitrary messages to be executed if proposal passes.
+  repeated google.protobuf.Any messages             = 1;
   string proposer = 2;
 }
 

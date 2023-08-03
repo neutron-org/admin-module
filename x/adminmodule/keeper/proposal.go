@@ -7,22 +7,11 @@ import (
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	govv1types "github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
-
-	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
+	govv1types "github.com/cosmos/cosmos-sdk/x/gov/types/v1"
 )
 
 // SubmitProposal create new proposal given a content
-func (k Keeper) SubmitProposal(ctx sdk.Context, content govv1types.Content) (govv1types.Proposal, error) {
-	if !k.rtr.HasRoute(content.ProposalRoute()) {
-		return govv1types.Proposal{}, sdkerrors.Wrap(govtypes.ErrNoProposalHandlerExists, content.ProposalRoute())
-	}
-
-	cacheCtx, _ := ctx.CacheContext()
-	handler := k.rtr.GetRoute(content.ProposalRoute())
-	if err := handler(cacheCtx, content); err != nil {
-		return govv1types.Proposal{}, sdkerrors.Wrap(govtypes.ErrInvalidProposalContent, err.Error())
-	}
+func (k Keeper) SubmitProposal(ctx sdk.Context, msgs []sdk.Msg) (govv1types.Proposal, error) {
 
 	proposalID, err := k.GetProposalID(ctx)
 	if err != nil {
@@ -31,8 +20,7 @@ func (k Keeper) SubmitProposal(ctx sdk.Context, content govv1types.Content) (gov
 
 	headerTime := ctx.BlockHeader().Time
 
-	// submitTime and depositEndTime would not be used
-	proposal, err := govv1types.NewProposal(content, proposalID, headerTime, headerTime)
+	proposal, err := govv1types.NewProposal(msgs, proposalID, headerTime, headerTime, "", "", "", nil)
 	if err != nil {
 		return govv1types.Proposal{}, err
 	}
@@ -68,7 +56,7 @@ func (k Keeper) SetProposal(ctx sdk.Context, proposal govv1types.Proposal) {
 
 	bz := k.MustMarshalProposal(proposal)
 
-	store.Set(types.ProposalKey(proposal.ProposalId), bz)
+	store.Set(types.ProposalKey(proposal.Id), bz)
 }
 
 // GetProposal get proposal from store by ProposalID

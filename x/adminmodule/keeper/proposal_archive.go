@@ -4,7 +4,7 @@ import (
 	"github.com/cosmos/admin-module/x/adminmodule/types"
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	govv1types "github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
+	govv1types "github.com/cosmos/cosmos-sdk/x/gov/types/v1"
 )
 
 func (k Keeper) GetArchivedProposals(ctx sdk.Context) []*govv1types.Proposal {
@@ -30,5 +30,5 @@ func (k Keeper) AddToArchive(ctx sdk.Context, proposal govv1types.Proposal) {
 
 	bz := k.MustMarshalProposal(proposal)
 
-	store.Set(types.ProposalKey(proposal.ProposalId), bz)
+	store.Set(types.ProposalKey(proposal.Id), bz)
 }

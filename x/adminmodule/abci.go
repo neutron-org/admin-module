@@ -9,6 +9,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/telemetry"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
+	v1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1"
 	govv1beta1types "github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
 )
 
@@ -18,10 +19,10 @@ func EndBlocker(ctx sdk.Context, keeper keeper.Keeper) {
 
 	logger := keeper.Logger(ctx)
 
-	keeper.IterateActiveProposalsQueue(ctx, func(proposal govv1beta1types.Proposal) bool {
+	keeper.IterateActiveProposalsQueueLegacy(ctx, func(proposal govv1beta1types.Proposal) bool {
 		var logMsg, tagValue string
 
-		handler := keeper.Router().GetRoute(proposal.ProposalRoute())
+		handler := keeper.RouterLegacy().GetRoute(proposal.ProposalRoute())
 		cacheCtx, writeCache := ctx.CacheContext()
 
 		// The proposal handler may execute state mutating logic depending
@@ -47,10 +48,10 @@ func EndBlocker(ctx sdk.Context, keeper keeper.Keeper) {
 			logMsg = fmt.Sprintf("proposal failed on execution: %s", err)
 		}
 
-		keeper.SetProposal(ctx, proposal)
+		keeper.SetProposalLegacy(ctx, proposal)
 		keeper.RemoveFromActiveProposalQueue(ctx, proposal.ProposalId)
 
-		keeper.AddToArchive(ctx, proposal)
+		keeper.AddToArchiveLegacy(ctx, proposal)
 
 		logger.Info(
 			"proposal tallied",
@@ -63,6 +64,66 @@ func EndBlocker(ctx sdk.Context, keeper keeper.Keeper) {
 			sdk.NewEvent(
 				types.EventTypeAdminProposal,
 				sdk.NewAttribute(govtypes.AttributeKeyProposalID, fmt.Sprintf("%d", proposal.ProposalId)),
+				sdk.NewAttribute(govtypes.AttributeKeyProposalResult, tagValue),
+			),
+		)
+		return false
+	})
+
+	keeper.IterateActiveProposalsQueue(ctx, func(proposal v1.Proposal) bool {
+		var tagValue string
+		var (
+			events sdk.Events
+			msg    sdk.Msg
+		)
+
+		// attempt to execute all messages within the passed proposal
+		// Messages may mutate state thus we use a cached context. If one of
+		// the handlers fails, no state mutation is written and the error
+		// message is logged.
+		cacheCtx, writeCache := ctx.CacheContext()
+		messages, err := proposal.GetMsgs()
+		if err == nil {
+			for _, msg = range messages {
+				handler := keeper.Router().Handler(msg)
+
+				var res *sdk.Result
+				res, err = handler(cacheCtx, msg)
+				if err != nil {
+					break
+				}
+
+				events = append(events, res.GetEvents()...)
+			}
+		}
+
+		// `err == nil` when all handlers passed.
+		// Or else, `idx` and `err` are populated with the msg index and error.
+		if err == nil {
+			proposal.Status = v1.StatusPassed
+			// TODO: log smth here
+
+			// write state to the underlying multi-store
+			writeCache()
+
+			// propagate the msg events to the current context
+			ctx.EventManager().EmitEvents(events)
+		} else {
+			proposal.Status = v1.StatusFailed
+		}
+
+		keeper.SetProposal(ctx, proposal)
+		keeper.RemoveFromActiveProposalQueue(ctx, proposal.Id)
+
+		logger.Info(
+			"proposal executed",
+			"proposal", proposal.Id,
+		)
+
+		ctx.EventManager().EmitEvent(
+			sdk.NewEvent(
+				types.EventTypeAdminProposal,
+				sdk.NewAttribute(govtypes.AttributeKeyProposalID, fmt.Sprintf("%d", proposal.Id)),
 				sdk.NewAttribute(govtypes.AttributeKeyProposalResult, tagValue),
 			),
 		)
