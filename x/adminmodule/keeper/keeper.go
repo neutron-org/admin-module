@@ -16,15 +16,25 @@ import (
 
 type (
 	Keeper struct {
-		cdc                       codec.Codec
-		storeKey                  storetypes.StoreKey
-		memKey                    storetypes.StoreKey
-		rtr                       govv1beta1types.Router
-		msgServiceRouter          *baseapp.MsgServiceRouter
-		IsProposalTypeWhitelisted func(govv1beta1types.Content) bool
+		cdc                           codec.Codec
+		storeKey                      storetypes.StoreKey
+		memKey                        storetypes.StoreKey
+		rtr                           govv1beta1types.Router
+		msgServiceRouter              *baseapp.MsgServiceRouter
+		IsProposalTypeWhitelisted     func(govv1beta1types.Content) bool
+		RegisteredModulesUpdateParams map[string]RegisteredModuleUpdateParams
 		// this line is used by starport scaffolding # ibc/keeper/attribute
 	}
 )
+
+type RegisteredModuleUpdateParams struct {
+	// Unique parameter struct of given module
+	ParamsMsg interface{}
+	// Unique parameters update struct of given module, implements sdk.Msg
+	// satisfying adminmodule.SumbitProposal(msgs []sdk.Msg ,<..>)
+
+	UpdateParamsMsg sdk.Msg
+}
 
 func NewKeeper(
 	cdc codec.Codec,
@@ -33,15 +43,17 @@ func NewKeeper(
 	rtr govv1beta1types.Router,
 	msgServiceRouter *baseapp.MsgServiceRouter,
 	isProposalTypeWhitelisted func(govv1beta1types.Content) bool,
-	// this line is used by starport scaffolding # ibc/keeper/parameter
+	RegisteredModulesUpdate map[string]RegisteredModuleUpdateParams,
+// this line is used by starport scaffolding # ibc/keeper/parameter
 ) *Keeper {
 	return &Keeper{
-		cdc:                       cdc,
-		storeKey:                  storeKey,
-		memKey:                    memKey,
-		rtr:                       rtr,
-		msgServiceRouter:          msgServiceRouter,
-		IsProposalTypeWhitelisted: isProposalTypeWhitelisted,
+		cdc:                           cdc,
+		storeKey:                      storeKey,
+		memKey:                        memKey,
+		rtr:                           rtr,
+		msgServiceRouter:              msgServiceRouter,
+		IsProposalTypeWhitelisted:     isProposalTypeWhitelisted,
+		RegisteredModulesUpdateParams: RegisteredModulesUpdate,
 		// this line is used by starport scaffolding # ibc/keeper/return
 	}
 }
