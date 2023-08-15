@@ -21,8 +21,8 @@ service Query {
   }
 
   // Queries a list of archived proposals.
-  rpc ArchivedProposalsLegacy(QueryArchivedProposalsRequest) returns (QueryArchivedProposalsResponse) {
-    option (google.api.http).get = "/cosmos/adminmodule/adminmodule/archivedproposals";
+  rpc ArchivedProposalsLegacy(QueryArchivedProposalsLegacyRequest) returns (QueryArchivedProposalsLegacyResponse) {
+    option (google.api.http).get = "/cosmos/adminmodule/adminmodule/archivedproposalslegacy";
   }
 
 }
@@ -45,5 +45,9 @@ message QueryProposalsResponse {
 }
 
 message QueryArchivedProposalsResponse {
+  repeated cosmos.gov.v1.Proposal proposals = 1;
+}
+
+message QueryArchivedProposalsLegacyResponse {
   repeated cosmos.gov.v1beta1.Proposal proposalsLegacy = 1;
 }

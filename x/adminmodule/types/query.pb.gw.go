@@ -70,7 +70,7 @@ func local_request_Query_ArchivedProposals_0(ctx context.Context, marshaler runt
 }
 
 func request_Query_ArchivedProposalsLegacy_0(ctx context.Context, marshaler runtime.Marshaler, client QueryClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq QueryArchivedProposalsRequest
+	var protoReq QueryArchivedProposalsLegacyRequest
 	var metadata runtime.ServerMetadata
 
 	msg, err := client.ArchivedProposalsLegacy(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
@@ -79,7 +79,7 @@ func request_Query_ArchivedProposalsLegacy_0(ctx context.Context, marshaler runt
 }
 
 func local_request_Query_ArchivedProposalsLegacy_0(ctx context.Context, marshaler runtime.Marshaler, server QueryServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq QueryArchivedProposalsRequest
+	var protoReq QueryArchivedProposalsLegacyRequest
 	var metadata runtime.ServerMetadata
 
 	msg, err := server.ArchivedProposalsLegacy(ctx, &protoReq)
@@ -271,7 +271,7 @@ var (
 
 	pattern_Query_ArchivedProposals_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 1, 2, 2}, []string{"cosmos", "adminmodule", "archivedproposals"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Query_ArchivedProposalsLegacy_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 1, 2, 2}, []string{"cosmos", "adminmodule", "archivedproposals"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_ArchivedProposalsLegacy_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 1, 2, 2}, []string{"cosmos", "adminmodule", "archivedproposalslegacy"}, "", runtime.AssumeColonVerbOpt(false)))
 )
 
 var (

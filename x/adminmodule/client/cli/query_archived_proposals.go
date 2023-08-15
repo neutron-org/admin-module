@@ -56,7 +56,7 @@ func CmdArchivedProposalsLegacy() *cobra.Command {
 
 			queryClient := types.NewQueryClient(clientCtx)
 
-			params := &types.QueryArchivedProposalsRequest{}
+			params := &types.QueryArchivedProposalsLegacyRequest{}
 
 			res, err := queryClient.ArchivedProposalsLegacy(cmd.Context(), params)
 			if err != nil {
