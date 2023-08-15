@@ -13,6 +13,7 @@ service Msg {
   rpc DeleteAdmin(MsgDeleteAdmin) returns (MsgDeleteAdminResponse);
   rpc AddAdmin(MsgAddAdmin) returns (MsgAddAdminResponse);
   rpc SubmitProposal(MsgSubmitProposal) returns (MsgSubmitProposalResponse);
+  rpc SubmitProposalLegacy(MsgSubmitProposalLegacy) returns (MsgSubmitProposalLegacyResponse);
 }
 
 message MsgDeleteAdmin {
