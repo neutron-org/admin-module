@@ -28,8 +28,6 @@ type (
 )
 
 type RegisteredModuleUpdateParams struct {
-	// Unique parameter struct of given module
-	ParamsMsg interface{}
 	// Unique parameters update struct of given module, implements sdk.Msg
 	// satisfying adminmodule.SumbitProposal(msgs []sdk.Msg ,<..>)
 
@@ -44,7 +42,7 @@ func NewKeeper(
 	msgServiceRouter *baseapp.MsgServiceRouter,
 	isProposalTypeWhitelisted func(govv1beta1types.Content) bool,
 	RegisteredModulesUpdate map[string]RegisteredModuleUpdateParams,
-// this line is used by starport scaffolding # ibc/keeper/parameter
+	// this line is used by starport scaffolding # ibc/keeper/parameter
 ) *Keeper {
 	return &Keeper{
 		cdc:                           cdc,

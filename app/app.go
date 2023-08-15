@@ -420,7 +420,7 @@ func New(
 		// register the governance hooks
 		),
 	)
-	keeperModule := map[string]adminmodulemodulekeeper.RegisteredModuleUpdateParams{"bank": {ParamsMsg: banktypes.Params{}, UpdateParamsMsg: &banktypes.MsgUpdateParams{}}}
+	keeperModule := map[string]adminmodulemodulekeeper.RegisteredModuleUpdateParams{"bank": {UpdateParamsMsg: &banktypes.MsgUpdateParams{}}}
 
 	// register the proposal types
 	adminRouterLegacy := govv1beta1.NewRouter()
