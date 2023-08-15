@@ -24,7 +24,7 @@ const (
 
 	ArchiveKey = "Archive-"
 
-	ArchiveLegacyKey = "Archive-"
+	ArchiveLegacyKey = "ArchiveLegacy-"
 )
 
 var (
