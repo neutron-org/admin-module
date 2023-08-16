@@ -32,7 +32,7 @@ func (k msgServer) SubmitProposalLegacy(goCtx context.Context, msg *types.MsgSub
 		return nil, err
 	}
 
-	defer telemetry.IncrCounter(1, types.ModuleName, "proposal")
+	defer telemetry.IncrCounter(1, types.ModuleName, "proposal legacy")
 
 	submitEvent := sdk.NewEvent(types.EventTypeSubmitAdminProposal, sdk.NewAttribute(govtypes.AttributeKeyProposalType, msg.GetContent().ProposalType()))
 	ctx.EventManager().EmitEvent(submitEvent)

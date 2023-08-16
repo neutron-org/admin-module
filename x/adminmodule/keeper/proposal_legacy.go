@@ -7,9 +7,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	govv1beta1types "github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
-
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
+	govv1beta1types "github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
 )
 
 // SubmitProposal create new proposal given a content
@@ -41,6 +40,13 @@ func (k Keeper) SubmitProposalLegacy(ctx sdk.Context, content govv1beta1types.Co
 	k.InsertActiveProposalQueueLegacy(ctx, proposalID)
 	k.SetProposalIDLegacy(ctx, proposalID+1)
 
+	logger := k.Logger(ctx)
+	logger.Info(
+		"LEGACY proposal processed via keeper",
+		"proposal", proposal.ProposalId,
+
+	)
+
 	return proposal, nil
 }
 
@@ -69,6 +75,13 @@ func (k Keeper) SetProposalLegacy(ctx sdk.Context, proposal govv1beta1types.Prop
 	bz := k.MustMarshalProposalLegacy(proposal)
 
 	store.Set(types.ProposalLegacyKey(proposal.ProposalId), bz)
+
+	logger := k.Logger(ctx)
+	logger.Info(
+		"LEGACY proposal set in storage",
+		"proposal", proposal.ProposalId,
+
+	)
 }
 
 // GetProposalLegacy get proposal from store by ProposalID
@@ -82,6 +95,13 @@ func (k Keeper) GetProposalLegacy(ctx sdk.Context, proposalID uint64) (govv1beta
 
 	var proposal govv1beta1types.Proposal
 	k.MustUnmarshalProposalLegacy(bz, &proposal)
+
+	logger := k.Logger(ctx)
+	logger.Info(
+		"LEGACY proposal get from storage",
+		"proposal", proposalID,
+
+	)
 
 	return proposal, true
 }
