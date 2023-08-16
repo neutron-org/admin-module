@@ -44,7 +44,7 @@ func (k Keeper) SubmitProposalLegacy(ctx sdk.Context, content govv1beta1types.Co
 	return proposal, nil
 }
 
-// GetProposalID gets the highest proposal ID
+// GetProposalIDLegacy gets the highest proposal ID
 func (k Keeper) GetProposalIDLegacy(ctx sdk.Context) (proposalID uint64, err error) {
 	store := ctx.KVStore(k.storeKey)
 	bz := store.Get(types.ProposalIDKeyLegacy)

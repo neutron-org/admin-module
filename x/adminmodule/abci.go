@@ -20,6 +20,11 @@ func EndBlocker(ctx sdk.Context, keeper keeper.Keeper) {
 	logger := keeper.Logger(ctx)
 
 	keeper.IterateActiveProposalsQueueLegacy(ctx, func(proposal govv1beta1types.Proposal) bool {
+		logger.Info(
+			"LEGACY QUEUE",
+			"proposal", proposal.ProposalId,
+
+		)
 		var logMsg, tagValue string
 
 		handler := keeper.RouterLegacy().GetRoute(proposal.ProposalRoute())
@@ -54,7 +59,7 @@ func EndBlocker(ctx sdk.Context, keeper keeper.Keeper) {
 		keeper.AddToArchiveLegacy(ctx, proposal)
 
 		logger.Info(
-			"proposal tallied",
+			"proposal legacy processed",
 			"proposal", proposal.ProposalId,
 			"title", proposal.GetTitle(),
 			"result", logMsg,
@@ -101,8 +106,6 @@ func EndBlocker(ctx sdk.Context, keeper keeper.Keeper) {
 		// Or else, `idx` and `err` are populated with the msg index and error.
 		if err == nil {
 			proposal.Status = v1.StatusPassed
-			// TODO: log smth here
-
 			// write state to the underlying multi-store
 			writeCache()
 
