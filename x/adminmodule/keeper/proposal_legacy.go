@@ -24,7 +24,7 @@ func (k Keeper) SubmitProposalLegacy(ctx sdk.Context, content govv1beta1types.Co
 		return govv1beta1types.Proposal{}, sdkerrors.Wrap(govtypes.ErrInvalidProposalContent, err.Error())
 	}
 
-	proposalID, err := k.GetProposalID(ctx)
+	proposalID, err := k.GetProposalIDLegacy(ctx)
 	if err != nil {
 		return govv1beta1types.Proposal{}, err
 	}
@@ -38,8 +38,8 @@ func (k Keeper) SubmitProposalLegacy(ctx sdk.Context, content govv1beta1types.Co
 	}
 
 	k.SetProposalLegacy(ctx, proposal)
-	k.InsertActiveProposalQueue(ctx, proposalID)
-	k.SetProposalID(ctx, proposalID+1)
+	k.InsertActiveProposalQueueLegacy(ctx, proposalID)
+	k.SetProposalIDLegacy(ctx, proposalID+1)
 
 	return proposal, nil
 }
@@ -47,7 +47,7 @@ func (k Keeper) SubmitProposalLegacy(ctx sdk.Context, content govv1beta1types.Co
 // GetProposalID gets the highest proposal ID
 func (k Keeper) GetProposalIDLegacy(ctx sdk.Context) (proposalID uint64, err error) {
 	store := ctx.KVStore(k.storeKey)
-	bz := store.Get(types.ProposalIDKey)
+	bz := store.Get(types.ProposalIDKeyLegacy)
 	if bz == nil {
 		return 0, sdkerrors.Wrap(types.ErrInvalidGenesis, "initial proposal ID hasn't been set")
 	}
@@ -59,7 +59,7 @@ func (k Keeper) GetProposalIDLegacy(ctx sdk.Context) (proposalID uint64, err err
 // SetProposalIDLegacy sets the new proposal ID to the store
 func (k Keeper) SetProposalIDLegacy(ctx sdk.Context, proposalID uint64) {
 	store := ctx.KVStore(k.storeKey)
-	store.Set(types.ProposalIDKey, types.GetProposalIDBytes(proposalID))
+	store.Set(types.ProposalIDKeyLegacy, types.GetProposalIDBytes(proposalID))
 }
 
 // SetProposalLegacy set a proposal to store
@@ -89,19 +89,19 @@ func (k Keeper) GetProposalLegacy(ctx sdk.Context, proposalID uint64) (govv1beta
 // InsertActiveProposalQueueLegacy inserts a ProposalID into the active proposal queue
 func (k Keeper) InsertActiveProposalQueueLegacy(ctx sdk.Context, proposalID uint64) {
 	store := ctx.KVStore(k.storeKey)
-	store.Set(types.ActiveProposalQueueKey(proposalID), types.GetProposalIDBytes(proposalID))
+	store.Set(types.ActiveProposalLegacyQueueKey(proposalID), types.GetProposalIDBytes(proposalID))
 }
 
 // RemoveFromActiveProposalQueueLegacy removes a proposalID from the Active Proposal Queue
 func (k Keeper) RemoveFromActiveProposalQueueLegacy(ctx sdk.Context, proposalID uint64) {
 	store := ctx.KVStore(k.storeKey)
-	store.Delete(types.ActiveProposalQueueKey(proposalID))
+	store.Delete(types.ActiveProposalLegacyQueueKey(proposalID))
 }
 
 // IterateActiveProposalsQueueLegacy iterates over the proposals in the active proposal queue
 // and performs a callback function
 func (k Keeper) IterateActiveProposalsQueueLegacy(ctx sdk.Context, cb func(proposal govv1beta1types.Proposal) (stop bool)) {
-	iterator := k.ActiveProposalQueueIterator(ctx)
+	iterator := k.ActiveProposalQueueIteratorLegacy(ctx)
 
 	defer iterator.Close()
 	for ; iterator.Valid(); iterator.Next() {
@@ -119,7 +119,7 @@ func (k Keeper) IterateActiveProposalsQueueLegacy(ctx sdk.Context, cb func(propo
 
 // ActiveProposalQueueIteratorLegacy returns an sdk.Iterator for all the proposals in the Active Queue
 func (k Keeper) ActiveProposalQueueIteratorLegacy(ctx sdk.Context) sdk.Iterator {
-	prefixStore := prefix.NewStore(ctx.KVStore(k.storeKey), types.ActiveProposalQueuePrefix)
+	prefixStore := prefix.NewStore(ctx.KVStore(k.storeKey), types.ActiveProposalLegacyQueuePrefix)
 	return prefixStore.Iterator(nil, nil)
 }
 

@@ -49,7 +49,7 @@ func EndBlocker(ctx sdk.Context, keeper keeper.Keeper) {
 		}
 
 		keeper.SetProposalLegacy(ctx, proposal)
-		keeper.RemoveFromActiveProposalQueue(ctx, proposal.ProposalId)
+		keeper.RemoveFromActiveProposalQueueLegacy(ctx, proposal.ProposalId)
 
 		keeper.AddToArchiveLegacy(ctx, proposal)
 
