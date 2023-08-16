@@ -20,11 +20,6 @@ func EndBlocker(ctx sdk.Context, keeper keeper.Keeper) {
 	logger := keeper.Logger(ctx)
 
 	keeper.IterateActiveProposalsQueueLegacy(ctx, func(proposal govv1beta1types.Proposal) bool {
-		logger.Info(
-			"LEGACY QUEUE",
-			"proposal", proposal.ProposalId,
-
-		)
 		var logMsg, tagValue string
 
 		handler := keeper.RouterLegacy().GetRoute(proposal.ProposalRoute())

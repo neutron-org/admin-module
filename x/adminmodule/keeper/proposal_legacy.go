@@ -40,13 +40,6 @@ func (k Keeper) SubmitProposalLegacy(ctx sdk.Context, content govv1beta1types.Co
 	k.InsertActiveProposalQueueLegacy(ctx, proposalID)
 	k.SetProposalIDLegacy(ctx, proposalID+1)
 
-	logger := k.Logger(ctx)
-	logger.Info(
-		"LEGACY proposal processed via keeper",
-		"proposal", proposal.ProposalId,
-
-	)
-
 	return proposal, nil
 }
 
@@ -76,12 +69,6 @@ func (k Keeper) SetProposalLegacy(ctx sdk.Context, proposal govv1beta1types.Prop
 
 	store.Set(types.ProposalLegacyKey(proposal.ProposalId), bz)
 
-	logger := k.Logger(ctx)
-	logger.Info(
-		"LEGACY proposal set in storage",
-		"proposal", proposal.ProposalId,
-
-	)
 }
 
 // GetProposalLegacy get proposal from store by ProposalID
@@ -95,13 +82,6 @@ func (k Keeper) GetProposalLegacy(ctx sdk.Context, proposalID uint64) (govv1beta
 
 	var proposal govv1beta1types.Proposal
 	k.MustUnmarshalProposalLegacy(bz, &proposal)
-
-	logger := k.Logger(ctx)
-	logger.Info(
-		"LEGACY proposal get from storage",
-		"proposal", proposalID,
-
-	)
 
 	return proposal, true
 }

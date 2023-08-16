@@ -13,6 +13,7 @@ func InitGenesis(ctx sdk.Context, k keeper.Keeper, genState types.GenesisState) 
 		k.SetAdmin(ctx, admin)
 	}
 	k.SetProposalID(ctx, 1)
+	k.SetProposalIDLegacy(ctx, 1)
 }
 
 // ExportGenesis returns the capability module's exported genesis.
