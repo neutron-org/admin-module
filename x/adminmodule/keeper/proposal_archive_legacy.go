@@ -30,5 +30,5 @@ func (k Keeper) AddToArchiveLegacy(ctx sdk.Context, proposal govv1beta1types.Pro
 
 	bz := k.MustMarshalProposalLegacy(proposal)
 
-	store.Set(types.ProposalKey(proposal.ProposalId), bz)
+	store.Set(types.ProposalLegacyKey(proposal.ProposalId), bz)
 }

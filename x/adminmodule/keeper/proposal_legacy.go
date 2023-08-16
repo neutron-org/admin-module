@@ -68,14 +68,14 @@ func (k Keeper) SetProposalLegacy(ctx sdk.Context, proposal govv1beta1types.Prop
 
 	bz := k.MustMarshalProposalLegacy(proposal)
 
-	store.Set(types.ProposalKey(proposal.ProposalId), bz)
+	store.Set(types.ProposalLegacyKey(proposal.ProposalId), bz)
 }
 
 // GetProposalLegacy get proposal from store by ProposalID
 func (k Keeper) GetProposalLegacy(ctx sdk.Context, proposalID uint64) (govv1beta1types.Proposal, bool) {
 	store := ctx.KVStore(k.storeKey)
 
-	bz := store.Get(types.ProposalKey(proposalID))
+	bz := store.Get(types.ProposalLegacyKey(proposalID))
 	if bz == nil {
 		return govv1beta1types.Proposal{}, false
 	}

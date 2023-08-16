@@ -29,10 +29,11 @@ const (
 
 var (
 	ProposalsKeyPrefix              = []byte{0x00}
-	ActiveProposalQueuePrefix       = []byte{0x01}
-	ActiveProposalLegacyQueuePrefix = []byte{0x02}
-	ProposalIDKey                   = []byte{0x03}
-	ProposalIDKeyLegacy             = []byte{0x04}
+	ProposalsKeyLegacyPrefix        = []byte{0x01}
+	ActiveProposalQueuePrefix       = []byte{0x02}
+	ActiveProposalLegacyQueuePrefix = []byte{0x03}
+	ProposalIDKey                   = []byte{0x04}
+	ProposalIDKeyLegacy             = []byte{0x05}
 )
 
 // GetProposalIDBytes returns the byte representation of the proposalID
@@ -50,6 +51,11 @@ func GetProposalIDFromBytes(bz []byte) (proposalID uint64) {
 // ProposalKey gets a specific proposal from the store
 func ProposalKey(proposalID uint64) []byte {
 	return append(ProposalsKeyPrefix, GetProposalIDBytes(proposalID)...)
+}
+
+// ProposalLegacyKey gets a specific proposal from the store
+func ProposalLegacyKey(proposalID uint64) []byte {
+	return append(ProposalsKeyLegacyPrefix, GetProposalIDBytes(proposalID)...)
 }
 
 // ActiveProposalQueueKey returns the key for a proposalID in the activeProposalQueue
