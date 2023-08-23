@@ -420,8 +420,6 @@ func New(
 		// register the governance hooks
 		),
 	)
-	keeperModule := map[string]adminmodulemodulekeeper.RegisteredModuleUpdateParams{"bank": {UpdateParamsMsg: &banktypes.MsgUpdateParams{}}}
-
 	// register the proposal types
 	adminRouterLegacy := govv1beta1.NewRouter()
 	adminRouterLegacy.AddRoute(govtypes.RouterKey, govv1beta1.ProposalHandler).
@@ -439,7 +437,7 @@ func New(
 		// this allows any type of proposal to be submitted to the admin module (everything is whitelisted)
 		// projects will implement their functions to define what is allowed for admins.
 		func(govv1beta1.Content) bool { return true },
-		keeperModule,
+		func(string) bool { return true },
 	)
 	adminModule := adminmodulemodule.NewAppModule(appCodec, app.AdminmoduleKeeper)
 

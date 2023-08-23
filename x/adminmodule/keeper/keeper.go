@@ -16,23 +16,15 @@ import (
 
 type (
 	Keeper struct {
-		cdc                           codec.Codec
-		storeKey                      storetypes.StoreKey
-		memKey                        storetypes.StoreKey
-		rtr                           govv1beta1types.Router
-		msgServiceRouter              *baseapp.MsgServiceRouter
-		IsProposalTypeWhitelisted     func(govv1beta1types.Content) bool
-		RegisteredModulesUpdateParams map[string]RegisteredModuleUpdateParams
-		// this line is used by starport scaffolding # ibc/keeper/attribute
+		cdc                       codec.Codec
+		storeKey                  storetypes.StoreKey
+		memKey                    storetypes.StoreKey
+		rtr                       govv1beta1types.Router
+		msgServiceRouter          *baseapp.MsgServiceRouter
+		IsProposalTypeWhitelisted func(govv1beta1types.Content) bool
+		IsModuleWhiteliested      func(typeUrl string) bool
 	}
 )
-
-type RegisteredModuleUpdateParams struct {
-	// Unique parameters update struct of given module, implements sdk.Msg
-	// satisfying adminmodule.SumbitProposal(msgs []sdk.Msg ,<..>)
-
-	UpdateParamsMsg sdk.Msg
-}
 
 func NewKeeper(
 	cdc codec.Codec,
@@ -41,18 +33,16 @@ func NewKeeper(
 	rtr govv1beta1types.Router,
 	msgServiceRouter *baseapp.MsgServiceRouter,
 	isProposalTypeWhitelisted func(govv1beta1types.Content) bool,
-	RegisteredModulesUpdate map[string]RegisteredModuleUpdateParams,
-	// this line is used by starport scaffolding # ibc/keeper/parameter
+	IsModuleWhiteliested func(typeUrl string) bool,
 ) *Keeper {
 	return &Keeper{
-		cdc:                           cdc,
-		storeKey:                      storeKey,
-		memKey:                        memKey,
-		rtr:                           rtr,
-		msgServiceRouter:              msgServiceRouter,
-		IsProposalTypeWhitelisted:     isProposalTypeWhitelisted,
-		RegisteredModulesUpdateParams: RegisteredModulesUpdate,
-		// this line is used by starport scaffolding # ibc/keeper/return
+		cdc:                       cdc,
+		storeKey:                  storeKey,
+		memKey:                    memKey,
+		rtr:                       rtr,
+		msgServiceRouter:          msgServiceRouter,
+		IsProposalTypeWhitelisted: isProposalTypeWhitelisted,
+		IsModuleWhiteliested:      IsModuleWhiteliested,
 	}
 }
 
@@ -66,6 +56,12 @@ func (k Keeper) Router() *baseapp.MsgServiceRouter {
 	return k.msgServiceRouter
 }
 
+// Router returns the adminmodule Keeper's Logger
 func (k Keeper) Logger(ctx sdk.Context) log.Logger {
 	return ctx.Logger().With("module", fmt.Sprintf("x/%s", types.ModuleName))
+}
+
+// Router returns the adminmodule Keeper's Codec
+func (k Keeper) Codec() codec.Codec {
+	return k.cdc
 }
