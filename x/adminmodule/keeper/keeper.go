@@ -22,7 +22,7 @@ type (
 		rtr                       govv1beta1types.Router
 		msgServiceRouter          *baseapp.MsgServiceRouter
 		IsProposalTypeWhitelisted func(govv1beta1types.Content) bool
-		IsModuleWhiteliested      func(typeUrl string) bool
+		IsMessageWhitelisted      func(message sdk.Msg) bool
 	}
 )
 
@@ -33,7 +33,7 @@ func NewKeeper(
 	rtr govv1beta1types.Router,
 	msgServiceRouter *baseapp.MsgServiceRouter,
 	isProposalTypeWhitelisted func(govv1beta1types.Content) bool,
-	IsModuleWhiteliested func(typeUrl string) bool,
+	IsMessageWhitelisted func(msg sdk.Msg) bool,
 ) *Keeper {
 	return &Keeper{
 		cdc:                       cdc,
@@ -42,7 +42,7 @@ func NewKeeper(
 		rtr:                       rtr,
 		msgServiceRouter:          msgServiceRouter,
 		IsProposalTypeWhitelisted: isProposalTypeWhitelisted,
-		IsModuleWhiteliested:      IsModuleWhiteliested,
+		IsMessageWhitelisted:      IsMessageWhitelisted,
 	}
 }
 

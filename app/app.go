@@ -437,7 +437,7 @@ func New(
 		// this allows any type of proposal to be submitted to the admin module (everything is whitelisted)
 		// projects will implement their functions to define what is allowed for admins.
 		func(govv1beta1.Content) bool { return true },
-		func(string) bool { return true },
+		func(msg sdk.Msg) bool { return true },
 	)
 	adminModule := adminmodulemodule.NewAppModule(appCodec, app.AdminmoduleKeeper)
 
