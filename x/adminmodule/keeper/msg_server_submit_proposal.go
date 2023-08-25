@@ -25,12 +25,11 @@ func (k msgServer) SubmitProposal(goCtx context.Context, msg *types.MsgSubmitPro
 		return nil, err
 	}
 
-	// TODO: whitelisting. do we need it as soon a we execute only wasm proposals this way?
-	//for _, msg := range msgs {
-	//	if !k.Keeper.IsProposalTypeWhitelisted(msg) {
-	//		return nil, errors.New("proposal content is not whitelisted")
-	//	}
-	//}
+	for _, msg := range msgs {
+		if !k.Keeper.IsMessageWhitelisted(msg) {
+			return nil, fmt.Errorf("sdk.Msg is not whitelisted: %s", msg)
+		}
+	}
 
 	proposal, err := k.Keeper.SubmitProposal(ctx, msgs)
 	if err != nil {
