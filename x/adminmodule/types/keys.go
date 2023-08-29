@@ -28,12 +28,12 @@ const (
 )
 
 var (
-	ProposalsKeyPrefix              = []byte{0x00}
-	ProposalsKeyLegacyPrefix        = []byte{0x01}
-	ActiveProposalQueuePrefix       = []byte{0x02}
-	ActiveProposalLegacyQueuePrefix = []byte{0x03}
-	ProposalIDKey                   = []byte{0x04}
-	ProposalIDKeyLegacy             = []byte{0x05}
+	ProposalsKeyLegacyPrefix        = []byte{0x00}
+	ActiveProposalLegacyQueuePrefix = []byte{0x01}
+	ProposalIDKeyLegacy             = []byte{0x03}
+	ProposalsKeyPrefix              = []byte{0x04}
+	ActiveProposalQueuePrefix       = []byte{0x05}
+	ProposalIDKey                   = []byte{0x06}
 )
 
 // GetProposalIDBytes returns the byte representation of the proposalID
