@@ -4,15 +4,19 @@ import (
 	"context"
 	"fmt"
 
+	"cosmossdk.io/errors"
 	"github.com/cosmos/admin-module/x/adminmodule/types"
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	"github.com/cosmos/cosmos-sdk/telemetry"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 )
 
 func (k msgServer) SubmitProposal(goCtx context.Context, msg *types.MsgSubmitProposal) (*types.MsgSubmitProposalResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
+	authority := authtypes.NewModuleAddress(types.ModuleName)
 
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), []byte(types.AdminKey))
 	storeCreator := store.Get([]byte(msg.Proposer))
@@ -26,6 +30,13 @@ func (k msgServer) SubmitProposal(goCtx context.Context, msg *types.MsgSubmitPro
 	}
 
 	for _, msg := range msgs {
+		signers := msg.GetSigners()
+		if len(signers) != 1 {
+			return nil, fmt.Errorf("should be only 1 signer in message, recieved: %s", msg.GetSigners())
+		}
+		if !signers[0].Equals(authority) {
+			return nil, errors.Wrap(sdkerrors.ErrorInvalidSigner, signers[0].String())
+		}
 		if !k.Keeper.IsMessageWhitelisted(msg) {
 			return nil, fmt.Errorf("sdk.Msg is not whitelisted: %s", msg)
 		}
@@ -38,7 +49,7 @@ func (k msgServer) SubmitProposal(goCtx context.Context, msg *types.MsgSubmitPro
 
 	defer telemetry.IncrCounter(1, types.ModuleName, "proposal")
 
-	submitEvent := sdk.NewEvent(types.EventTypeSubmitAdminProposal, sdk.NewAttribute(govtypes.AttributeKeyProposalType, "TODO"))
+	submitEvent := sdk.NewEvent(types.EventTypeSubmitAdminProposal, sdk.NewAttribute(govtypes.AttributeKeyProposalType, "sdk message proposal"))
 	ctx.EventManager().EmitEvent(submitEvent)
 
 	return &types.MsgSubmitProposalResponse{

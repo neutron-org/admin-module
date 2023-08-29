@@ -72,10 +72,17 @@ func EndBlocker(ctx sdk.Context, keeper keeper.Keeper) {
 
 	keeper.IterateActiveProposalsQueue(ctx, func(proposal v1.Proposal) bool {
 		var tagValue string
-                cacheCtx, writeCache := ctx.CacheContext()
+		cacheCtx, writeCache := ctx.CacheContext()
 		events, err := handleProposalMsgs(cacheCtx, keeper, proposal)
 		if err != nil {
 			proposal.Status = v1.StatusFailed
+
+			logger.Error(
+				"proposal failed",
+				"proposal", proposal.Id,
+				"error", err,
+			)
+
 		} else {
 			proposal.Status = v1.StatusPassed
 			// write state to the underlying multi-store
