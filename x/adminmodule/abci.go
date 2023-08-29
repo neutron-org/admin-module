@@ -72,42 +72,17 @@ func EndBlocker(ctx sdk.Context, keeper keeper.Keeper) {
 
 	keeper.IterateActiveProposalsQueue(ctx, func(proposal v1.Proposal) bool {
 		var tagValue string
-		var (
-			events sdk.Events
-			msg    sdk.Msg
-		)
-
-		// attempt to execute all messages within the passed proposal
-		// Messages may mutate state thus we use a cached context. If one of
-		// the handlers fails, no state mutation is written and the error
-		// message is logged.
-		cacheCtx, writeCache := ctx.CacheContext()
-		messages, err := proposal.GetMsgs()
-		if err == nil {
-			for _, msg = range messages {
-				handler := keeper.Router().Handler(msg)
-
-				var res *sdk.Result
-				res, err = handler(cacheCtx, msg)
-				if err != nil {
-					break
-				}
-
-				events = append(events, res.GetEvents()...)
-			}
-		}
-
-		// `err == nil` when all handlers passed.
-		// Or else, `idx` and `err` are populated with the msg index and error.
-		if err == nil {
+                cacheCtx, writeCache := ctx.CacheContext()
+		events, err := handleProposalMsgs(cacheCtx, keeper, proposal)
+		if err != nil {
+			proposal.Status = v1.StatusFailed
+		} else {
 			proposal.Status = v1.StatusPassed
 			// write state to the underlying multi-store
 			writeCache()
 
 			// propagate the msg events to the current context
 			ctx.EventManager().EmitEvents(events)
-		} else {
-			proposal.Status = v1.StatusFailed
 		}
 
 		keeper.SetProposal(ctx, proposal)
@@ -127,4 +102,24 @@ func EndBlocker(ctx sdk.Context, keeper keeper.Keeper) {
 		)
 		return false
 	})
+}
+
+func handleProposalMsgs(ctx sdk.Context, keeper keeper.Keeper, proposal v1.Proposal) (sdk.Events, error) {
+	var events sdk.Events
+	messages, err := proposal.GetMsgs()
+	if err != nil {
+		return nil, fmt.Errorf("failed to get proposal msgs: %w", err)
+	}
+
+	for idx, msg := range messages {
+		handler := keeper.Router().Handler(msg)
+
+		var res *sdk.Result
+		res, err := handler(ctx, msg)
+		if err != nil {
+			return nil, fmt.Errorf("failed to handle %d msg in proposal %d: %w", idx, proposal.Id, err)
+		}
+		events = append(events, res.GetEvents()...)
+	}
+	return events, nil
 }
