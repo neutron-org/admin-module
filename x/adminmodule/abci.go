@@ -76,7 +76,7 @@ func EndBlocker(ctx sdk.Context, keeper keeper.Keeper) {
 		events, err := handleProposalMsgs(cacheCtx, keeper, proposal)
 		if err != nil {
 			proposal.Status = v1.StatusFailed
-
+			tagValue = govtypes.AttributeValueProposalFailed
 			logger.Error(
 				"proposal failed",
 				"proposal", proposal.Id,
@@ -87,6 +87,7 @@ func EndBlocker(ctx sdk.Context, keeper keeper.Keeper) {
 			proposal.Status = v1.StatusPassed
 			// write state to the underlying multi-store
 			writeCache()
+			tagValue = govtypes.AttributeValueProposalPassed
 
 			// propagate the msg events to the current context
 			ctx.EventManager().EmitEvents(events)

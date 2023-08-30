@@ -45,7 +45,7 @@ func CmdArchivedProposals() *cobra.Command {
 func CmdArchivedProposalsLegacy() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "archivedproposalslegacy",
-		Short: "Query archived proposals",
+		Short: "Query archived proposals legacy",
 		Args:  cobra.ExactArgs(0),
 		RunE: func(cmd *cobra.Command, args []string) error {
 

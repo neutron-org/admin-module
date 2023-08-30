@@ -6,6 +6,7 @@ import (
 
 	"fmt"
 
+	cosmoserrors "cosmossdk.io/errors"
 	"github.com/cosmos/admin-module/x/adminmodule/types"
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	"github.com/cosmos/cosmos-sdk/telemetry"
@@ -23,13 +24,13 @@ func (k msgServer) SubmitProposalLegacy(goCtx context.Context, msg *types.MsgSub
 	}
 
 	content := msg.GetContent()
-	if !k.Keeper.IsProposalTypeWhitelisted(content) {
+	if !k.Keeper.isProposalTypeWhitelisted(content) {
 		return nil, errors.New("proposal content is not whitelisted")
 	}
 
 	proposal, err := k.Keeper.SubmitProposalLegacy(ctx, content)
 	if err != nil {
-		return nil, err
+		return nil, cosmoserrors.Wrap(err, "failed to submit proposal legacy")
 	}
 
 	defer telemetry.IncrCounter(1, types.ModuleName, "proposal legacy")

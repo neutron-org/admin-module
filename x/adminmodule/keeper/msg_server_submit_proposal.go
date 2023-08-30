@@ -26,7 +26,7 @@ func (k msgServer) SubmitProposal(goCtx context.Context, msg *types.MsgSubmitPro
 
 	msgs, err := msg.GetMsgs()
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "failed to submit proposal")
 	}
 
 	for _, msg := range msgs {
@@ -37,19 +37,19 @@ func (k msgServer) SubmitProposal(goCtx context.Context, msg *types.MsgSubmitPro
 		if !signers[0].Equals(authority) {
 			return nil, errors.Wrap(sdkerrors.ErrorInvalidSigner, signers[0].String())
 		}
-		if !k.Keeper.IsMessageWhitelisted(msg) {
+		if !k.Keeper.isMessageWhitelisted(msg) {
 			return nil, fmt.Errorf("sdk.Msg is not whitelisted: %s", msg)
 		}
 	}
 
 	proposal, err := k.Keeper.SubmitProposal(ctx, msgs)
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "failed to submit proposal")
 	}
 
 	defer telemetry.IncrCounter(1, types.ModuleName, "proposal")
 
-	submitEvent := sdk.NewEvent(types.EventTypeSubmitAdminProposal, sdk.NewAttribute(govtypes.AttributeKeyProposalType, "sdk message proposal"))
+	submitEvent := sdk.NewEvent(types.EventTypeSubmitAdminProposal, sdk.NewAttribute(govtypes.AttributeKeyProposalType, types.EventTypeSubmitSdkMessage))
 	ctx.EventManager().EmitEvent(submitEvent)
 
 	return &types.MsgSubmitProposalResponse{
