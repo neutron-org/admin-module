@@ -20,6 +20,7 @@ require (
 
 require (
 	cosmossdk.io/core v0.5.1
+	cosmossdk.io/errors v1.0.0-beta.7
 	cosmossdk.io/tools/rosetta v0.2.1
 	github.com/cosmos/cosmos-proto v1.0.0-beta.2
 	github.com/cosmos/gogoproto v1.4.10
@@ -36,7 +37,6 @@ require (
 	cloud.google.com/go/storage v1.29.0 // indirect
 	cosmossdk.io/api v0.3.1 // indirect
 	cosmossdk.io/depinject v1.0.0-alpha.3 // indirect
-	cosmossdk.io/errors v1.0.0-beta.7 // indirect
 	cosmossdk.io/log v1.1.0 // indirect
 	cosmossdk.io/math v1.0.1 // indirect
 	filippo.io/edwards25519 v1.0.0 // indirect

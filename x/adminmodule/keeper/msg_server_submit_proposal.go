@@ -32,7 +32,7 @@ func (k msgServer) SubmitProposal(goCtx context.Context, msg *types.MsgSubmitPro
 	for _, msg := range msgs {
 		signers := msg.GetSigners()
 		if len(signers) != 1 {
-			return nil, fmt.Errorf("should be only 1 signer in message, recieved: %s", msg.GetSigners())
+			return nil, fmt.Errorf("should be only 1 signer in message, received: %s", msg.GetSigners())
 		}
 		if !signers[0].Equals(authority) {
 			return nil, errors.Wrap(sdkerrors.ErrorInvalidSigner, signers[0].String())

@@ -95,6 +95,7 @@ func EndBlocker(ctx sdk.Context, keeper keeper.Keeper) {
 
 		keeper.SetProposal(ctx, proposal)
 		keeper.RemoveFromActiveProposalQueue(ctx, proposal.Id)
+		keeper.AddToArchive(ctx, proposal)
 
 		logger.Info(
 			"proposal executed",

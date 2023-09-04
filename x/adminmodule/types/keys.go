@@ -22,9 +22,9 @@ const (
 
 	AdminKey = "Admin-"
 
-	ArchiveKey = "Archive-"
+	ArchiveKey = "ArchiveSdk47-"
 
-	ArchiveLegacyKey = "ArchiveLegacy-"
+	ArchiveLegacyKey = "Archive-"
 )
 
 var (

@@ -12,7 +12,7 @@ import (
 
 // SubmitProposal create new proposal given a content
 func (k Keeper) SubmitProposal(ctx sdk.Context, msgs []sdk.Msg) (govv1types.Proposal, error) {
-
+	var events sdk.Events
 	proposalID, err := k.GetProposalID(ctx)
 	if err != nil {
 		return govv1types.Proposal{}, err
@@ -25,9 +25,20 @@ func (k Keeper) SubmitProposal(ctx sdk.Context, msgs []sdk.Msg) (govv1types.Prop
 		return govv1types.Proposal{}, err
 	}
 
+	for idx, msg := range msgs {
+		handler := k.Router().Handler(msg)
+
+		var res *sdk.Result
+		res, err := handler(ctx, msg)
+		if err != nil {
+			return proposal, fmt.Errorf("failed to handle %d msg in proposal %d: %w", idx, proposal.Id, err)
+		}
+		events = append(events, res.GetEvents()...)
+	}
+	proposal.Status = govv1types.StatusPassed
 	k.SetProposal(ctx, proposal)
-	k.InsertActiveProposalQueue(ctx, proposalID)
 	k.SetProposalID(ctx, proposalID+1)
+	k.AddToArchive(ctx, proposal)
 
 	return proposal, nil
 }

@@ -17,10 +17,9 @@ func (k Keeper) SubmitProposalLegacy(ctx sdk.Context, content govv1beta1types.Co
 		return govv1beta1types.Proposal{}, sdkerrors.Wrap(govtypes.ErrNoProposalHandlerExists, content.ProposalRoute())
 	}
 
-	cacheCtx, _ := ctx.CacheContext()
-	handler := k.rtr.GetRoute(content.ProposalRoute())
-	if err := handler(cacheCtx, content); err != nil {
-		return govv1beta1types.Proposal{}, sdkerrors.Wrap(govtypes.ErrInvalidProposalContent, err.Error())
+	err := content.ValidateBasic()
+	if err != nil {
+		return govv1beta1types.Proposal{}, sdkerrors.Wrap(err, "failed to validate proposal content")
 	}
 
 	proposalID, err := k.GetProposalIDLegacy(ctx)
@@ -29,16 +28,36 @@ func (k Keeper) SubmitProposalLegacy(ctx sdk.Context, content govv1beta1types.Co
 	}
 
 	headerTime := ctx.BlockHeader().Time
-
 	// submitTime and depositEndTime would not be used
 	proposal, err := govv1beta1types.NewProposal(content, proposalID, headerTime, headerTime)
 	if err != nil {
-		return govv1beta1types.Proposal{}, err
+		return govv1beta1types.Proposal{}, sdkerrors.Wrap(err, "failed to create proposal struct")
 	}
 
+	handler := k.RouterLegacy().GetRoute(proposal.ProposalRoute())
+	cacheCtx, writeCache := ctx.CacheContext()
+
+	// The proposal handler may execute state mutating logic depending
+	// on the proposal content. If the handler fails, no state mutation
+	// is written and the error message is returned.
+	err = handler(cacheCtx, content)
+	if err == nil {
+		proposal.Status = govv1beta1types.StatusPassed
+
+		// The cached context is created with a new EventManager. However, since
+		// the proposal handler execution was successful, we want to track/keep
+		// any events emitted, so we re-emit to "merge" the events into the
+		// original Context's EventManager.
+		ctx.EventManager().EmitEvents(cacheCtx.EventManager().Events())
+
+		// write state to the underlying multi-store
+		writeCache()
+	} else {
+		return govv1beta1types.Proposal{}, err
+	}
 	k.SetProposalLegacy(ctx, proposal)
-	k.InsertActiveProposalQueueLegacy(ctx, proposalID)
 	k.SetProposalIDLegacy(ctx, proposalID+1)
+	k.AddToArchiveLegacy(ctx, proposal)
 
 	return proposal, nil
 }
