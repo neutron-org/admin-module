@@ -35,25 +35,15 @@ func (k Keeper) SubmitProposalLegacy(ctx sdk.Context, content govv1beta1types.Co
 	}
 
 	handler := k.RouterLegacy().GetRoute(proposal.ProposalRoute())
-	cacheCtx, writeCache := ctx.CacheContext()
-
 	// The proposal handler may execute state mutating logic depending
 	// on the proposal content. If the handler fails, no state mutation
 	// is written and the error message is returned.
-	err = handler(cacheCtx, content)
+	err = handler(ctx, content)
 	if err == nil {
 		proposal.Status = govv1beta1types.StatusPassed
 
-		// The cached context is created with a new EventManager. However, since
-		// the proposal handler execution was successful, we want to track/keep
-		// any events emitted, so we re-emit to "merge" the events into the
-		// original Context's EventManager.
-		ctx.EventManager().EmitEvents(cacheCtx.EventManager().Events())
-
-		// write state to the underlying multi-store
-		writeCache()
 	} else {
-		return govv1beta1types.Proposal{}, err
+		return govv1beta1types.Proposal{}, sdkerrors.Wrap(err, "failed to execute proposal proposal struct")
 	}
 	k.SetProposalLegacy(ctx, proposal)
 	k.SetProposalIDLegacy(ctx, proposalID+1)
