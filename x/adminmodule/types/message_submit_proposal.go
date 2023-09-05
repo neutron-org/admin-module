@@ -31,7 +31,7 @@ func NewMsgSubmitProposal(messages []sdk.Msg, proposer sdk.AccAddress) (*MsgSubm
 
 // GetMsgs unpacks m.Messages Any's into sdk.Msg's
 func (m *MsgSubmitProposal) GetMsgs() ([]sdk.Msg, error) {
-	return sdktx.GetMsgs(m.Messages, "sdk.MsgProposal")
+	return sdktx.GetMsgs(m.Messages, "sdk.Msg")
 }
 
 func (m *MsgSubmitProposal) Route() string {
@@ -65,7 +65,10 @@ func (m *MsgSubmitProposal) String() string {
 // ValidateBasic implements Msg
 func (m *MsgSubmitProposal) ValidateBasic() error {
 	if m.Proposer == "" {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, m.Proposer)
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "proposer are empty")
+	}
+	if len(m.Messages) == 0 {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "messages are empty")
 	}
 	return nil
 }

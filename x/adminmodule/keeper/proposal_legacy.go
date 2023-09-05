@@ -1,10 +1,7 @@
 package keeper
 
 import (
-	"fmt"
-
 	"github.com/cosmos/admin-module/x/adminmodule/types"
-	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
@@ -93,43 +90,6 @@ func (k Keeper) GetProposalLegacy(ctx sdk.Context, proposalID uint64) (govv1beta
 	k.MustUnmarshalProposalLegacy(bz, &proposal)
 
 	return proposal, true
-}
-
-// InsertActiveProposalQueueLegacy inserts a ProposalID into the active proposal queue
-func (k Keeper) InsertActiveProposalQueueLegacy(ctx sdk.Context, proposalID uint64) {
-	store := ctx.KVStore(k.storeKey)
-	store.Set(types.ActiveProposalLegacyQueueKey(proposalID), types.GetProposalIDBytes(proposalID))
-}
-
-// RemoveFromActiveProposalQueueLegacy removes a proposalID from the Active Proposal Queue
-func (k Keeper) RemoveFromActiveProposalQueueLegacy(ctx sdk.Context, proposalID uint64) {
-	store := ctx.KVStore(k.storeKey)
-	store.Delete(types.ActiveProposalLegacyQueueKey(proposalID))
-}
-
-// IterateActiveProposalsQueueLegacy iterates over the proposals in the active proposal queue
-// and performs a callback function
-func (k Keeper) IterateActiveProposalsQueueLegacy(ctx sdk.Context, cb func(proposal govv1beta1types.Proposal) (stop bool)) {
-	iterator := k.ActiveProposalQueueIteratorLegacy(ctx)
-
-	defer iterator.Close()
-	for ; iterator.Valid(); iterator.Next() {
-		proposalID := types.GetProposalIDFromBytes(iterator.Value())
-		proposal, found := k.GetProposalLegacy(ctx, proposalID)
-		if !found {
-			panic(fmt.Sprintf("proposal %d does not exist", proposalID))
-		}
-
-		if cb(proposal) {
-			break
-		}
-	}
-}
-
-// ActiveProposalQueueIteratorLegacy returns an sdk.Iterator for all the proposals in the Active Queue
-func (k Keeper) ActiveProposalQueueIteratorLegacy(ctx sdk.Context) sdk.Iterator {
-	prefixStore := prefix.NewStore(ctx.KVStore(k.storeKey), types.ActiveProposalLegacyQueuePrefix)
-	return prefixStore.Iterator(nil, nil)
 }
 
 func (k Keeper) MarshalProposalLegacy(proposal govv1beta1types.Proposal) ([]byte, error) {

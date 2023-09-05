@@ -72,7 +72,6 @@ func (m *MsgSubmitProposalLegacy) String() string {
 	return string(out)
 }
 
-// ValidateBasic implements Msg
 func (m *MsgSubmitProposalLegacy) ValidateBasic() error {
 	if m.Proposer == "" {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, m.Proposer)

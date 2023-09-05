@@ -4,7 +4,6 @@ import (
 	"fmt"
 
 	"github.com/cosmos/admin-module/x/adminmodule/types"
-	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	govv1types "github.com/cosmos/cosmos-sdk/x/gov/types/v1"
@@ -83,43 +82,6 @@ func (k Keeper) GetProposal(ctx sdk.Context, proposalID uint64) (govv1types.Prop
 	k.MustUnmarshalProposal(bz, &proposal)
 
 	return proposal, true
-}
-
-// InsertActiveProposalQueue inserts a ProposalID into the active proposal queue
-func (k Keeper) InsertActiveProposalQueue(ctx sdk.Context, proposalID uint64) {
-	store := ctx.KVStore(k.storeKey)
-	store.Set(types.ActiveProposalQueueKey(proposalID), types.GetProposalIDBytes(proposalID))
-}
-
-// RemoveFromActiveProposalQueue removes a proposalID from the Active Proposal Queue
-func (k Keeper) RemoveFromActiveProposalQueue(ctx sdk.Context, proposalID uint64) {
-	store := ctx.KVStore(k.storeKey)
-	store.Delete(types.ActiveProposalQueueKey(proposalID))
-}
-
-// IterateActiveProposalsQueue iterates over the proposals in the active proposal queue
-// and performs a callback function
-func (k Keeper) IterateActiveProposalsQueue(ctx sdk.Context, cb func(proposal govv1types.Proposal) (stop bool)) {
-	iterator := k.ActiveProposalQueueIterator(ctx)
-
-	defer iterator.Close()
-	for ; iterator.Valid(); iterator.Next() {
-		proposalID := types.GetProposalIDFromBytes(iterator.Value())
-		proposal, found := k.GetProposal(ctx, proposalID)
-		if !found {
-			panic(fmt.Sprintf("proposal %d does not exist", proposalID))
-		}
-
-		if cb(proposal) {
-			break
-		}
-	}
-}
-
-// ActiveProposalQueueIterator returns an sdk.Iterator for all the proposals in the Active Queue
-func (k Keeper) ActiveProposalQueueIterator(ctx sdk.Context) sdk.Iterator {
-	prefixStore := prefix.NewStore(ctx.KVStore(k.storeKey), types.ActiveProposalQueuePrefix)
-	return prefixStore.Iterator(nil, nil)
 }
 
 func (k Keeper) MarshalProposal(proposal govv1types.Proposal) ([]byte, error) {
