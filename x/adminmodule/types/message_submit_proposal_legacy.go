@@ -43,7 +43,7 @@ func (m *MsgSubmitProposalLegacy) GetContent() govtypesv1b1.Content {
 func (m *MsgSubmitProposalLegacy) SetContent(content govtypesv1b1.Content) error {
 	msg, ok := content.(proto.Message)
 	if !ok {
-		return fmt.Errorf("can't proto marshal %T", msg)
+		return fmt.Errorf("failed to cast proposal content of type %T to proto.Message", msg)
 	}
 	any, err := types.NewAnyWithValue(msg)
 	if err != nil {

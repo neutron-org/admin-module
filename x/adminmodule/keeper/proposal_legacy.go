@@ -74,7 +74,6 @@ func (k Keeper) SetProposalLegacy(ctx sdk.Context, proposal govv1beta1types.Prop
 	bz := k.MustMarshalProposalLegacy(proposal)
 
 	store.Set(types.ProposalLegacyKey(proposal.ProposalId), bz)
-
 }
 
 // GetProposalLegacy get proposal from store by ProposalID
