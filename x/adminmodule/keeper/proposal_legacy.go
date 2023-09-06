@@ -10,7 +10,7 @@ import (
 
 // SubmitProposal create new proposal given a content
 func (k Keeper) SubmitProposalLegacy(ctx sdk.Context, content govv1beta1types.Content) (govv1beta1types.Proposal, error) {
-	if !k.rtr.HasRoute(content.ProposalRoute()) {
+	if !k.legacyRouter.HasRoute(content.ProposalRoute()) {
 		return govv1beta1types.Proposal{}, sdkerrors.Wrap(govtypes.ErrNoProposalHandlerExists, content.ProposalRoute())
 	}
 

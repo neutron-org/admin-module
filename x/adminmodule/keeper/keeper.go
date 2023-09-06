@@ -19,7 +19,7 @@ type (
 		cdc                       codec.Codec
 		storeKey                  storetypes.StoreKey
 		memKey                    storetypes.StoreKey
-		rtr                       govv1beta1types.Router
+		legacyRouter              govv1beta1types.Router
 		msgServiceRouter          *baseapp.MsgServiceRouter
 		isProposalTypeWhitelisted func(govv1beta1types.Content) bool
 		isMessageWhitelisted      func(message sdk.Msg) bool
@@ -33,22 +33,22 @@ func NewKeeper(
 	rtr govv1beta1types.Router,
 	msgServiceRouter *baseapp.MsgServiceRouter,
 	isProposalTypeWhitelisted func(govv1beta1types.Content) bool,
-	IsMessageWhitelisted func(msg sdk.Msg) bool,
+	isMessageWhitelisted func(msg sdk.Msg) bool,
 ) *Keeper {
 	return &Keeper{
 		cdc:                       cdc,
 		storeKey:                  storeKey,
 		memKey:                    memKey,
-		rtr:                       rtr,
+		legacyRouter:              rtr,
 		msgServiceRouter:          msgServiceRouter,
 		isProposalTypeWhitelisted: isProposalTypeWhitelisted,
-		isMessageWhitelisted:      IsMessageWhitelisted,
+		isMessageWhitelisted:      isMessageWhitelisted,
 	}
 }
 
 // RouterLegacy returns the adminmodule Keeper's govtypeRouter
 func (k Keeper) RouterLegacy() govv1beta1types.Router {
-	return k.rtr
+	return k.legacyRouter
 }
 
 // Router returns the adminmodule Keeper's Router
