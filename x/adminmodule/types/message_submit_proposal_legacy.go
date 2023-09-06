@@ -74,7 +74,7 @@ func (m *MsgSubmitProposalLegacy) String() string {
 
 func (m *MsgSubmitProposalLegacy) ValidateBasic() error {
 	if m.Proposer == "" {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, m.Proposer)
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "missinng proposer")
 	}
 
 	content := m.GetContent()
