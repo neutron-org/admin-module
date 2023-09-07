@@ -4,26 +4,14 @@ import (
 	"fmt"
 
 	"github.com/cosmos/admin-module/x/adminmodule/types"
-	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	govv1types "github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
-
-	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
+	govv1types "github.com/cosmos/cosmos-sdk/x/gov/types/v1"
 )
 
 // SubmitProposal create new proposal given a content
-func (k Keeper) SubmitProposal(ctx sdk.Context, content govv1types.Content) (govv1types.Proposal, error) {
-	if !k.rtr.HasRoute(content.ProposalRoute()) {
-		return govv1types.Proposal{}, sdkerrors.Wrap(govtypes.ErrNoProposalHandlerExists, content.ProposalRoute())
-	}
-
-	cacheCtx, _ := ctx.CacheContext()
-	handler := k.rtr.GetRoute(content.ProposalRoute())
-	if err := handler(cacheCtx, content); err != nil {
-		return govv1types.Proposal{}, sdkerrors.Wrap(govtypes.ErrInvalidProposalContent, err.Error())
-	}
-
+func (k Keeper) SubmitProposal(ctx sdk.Context, msgs []sdk.Msg) (govv1types.Proposal, error) {
+	var events sdk.Events
 	proposalID, err := k.GetProposalID(ctx)
 	if err != nil {
 		return govv1types.Proposal{}, err
@@ -31,15 +19,25 @@ func (k Keeper) SubmitProposal(ctx sdk.Context, content govv1types.Content) (gov
 
 	headerTime := ctx.BlockHeader().Time
 
-	// submitTime and depositEndTime would not be used
-	proposal, err := govv1types.NewProposal(content, proposalID, headerTime, headerTime)
+	proposal, err := govv1types.NewProposal(msgs, proposalID, headerTime, headerTime, "", "", "", nil)
 	if err != nil {
 		return govv1types.Proposal{}, err
 	}
 
+	for idx, msg := range msgs {
+		handler := k.Router().Handler(msg)
+
+		var res *sdk.Result
+		res, err := handler(ctx, msg)
+		if err != nil {
+			return proposal, fmt.Errorf("failed to handle %d msg in proposal %d: %w", idx, proposal.Id, err)
+		}
+		events = append(events, res.GetEvents()...)
+	}
+	proposal.Status = govv1types.StatusPassed
 	k.SetProposal(ctx, proposal)
-	k.InsertActiveProposalQueue(ctx, proposalID)
 	k.SetProposalID(ctx, proposalID+1)
+	k.AddToArchive(ctx, proposal)
 
 	return proposal, nil
 }
@@ -68,7 +66,7 @@ func (k Keeper) SetProposal(ctx sdk.Context, proposal govv1types.Proposal) {
 
 	bz := k.MustMarshalProposal(proposal)
 
-	store.Set(types.ProposalKey(proposal.ProposalId), bz)
+	store.Set(types.ProposalKey(proposal.Id), bz)
 }
 
 // GetProposal get proposal from store by ProposalID
@@ -84,43 +82,6 @@ func (k Keeper) GetProposal(ctx sdk.Context, proposalID uint64) (govv1types.Prop
 	k.MustUnmarshalProposal(bz, &proposal)
 
 	return proposal, true
-}
-
-// InsertActiveProposalQueue inserts a ProposalID into the active proposal queue
-func (k Keeper) InsertActiveProposalQueue(ctx sdk.Context, proposalID uint64) {
-	store := ctx.KVStore(k.storeKey)
-	store.Set(types.ActiveProposalQueueKey(proposalID), types.GetProposalIDBytes(proposalID))
-}
-
-// RemoveFromActiveProposalQueue removes a proposalID from the Active Proposal Queue
-func (k Keeper) RemoveFromActiveProposalQueue(ctx sdk.Context, proposalID uint64) {
-	store := ctx.KVStore(k.storeKey)
-	store.Delete(types.ActiveProposalQueueKey(proposalID))
-}
-
-// IterateActiveProposalsQueue iterates over the proposals in the active proposal queue
-// and performs a callback function
-func (k Keeper) IterateActiveProposalsQueue(ctx sdk.Context, cb func(proposal govv1types.Proposal) (stop bool)) {
-	iterator := k.ActiveProposalQueueIterator(ctx)
-
-	defer iterator.Close()
-	for ; iterator.Valid(); iterator.Next() {
-		proposalID := types.GetProposalIDFromBytes(iterator.Value())
-		proposal, found := k.GetProposal(ctx, proposalID)
-		if !found {
-			panic(fmt.Sprintf("proposal %d does not exist", proposalID))
-		}
-
-		if cb(proposal) {
-			break
-		}
-	}
-}
-
-// ActiveProposalQueueIterator returns an sdk.Iterator for all the proposals in the Active Queue
-func (k Keeper) ActiveProposalQueueIterator(ctx sdk.Context) sdk.Iterator {
-	prefixStore := prefix.NewStore(ctx.KVStore(k.storeKey), types.ActiveProposalQueuePrefix)
-	return prefixStore.Iterator(nil, nil)
 }
 
 func (k Keeper) MarshalProposal(proposal govv1types.Proposal) ([]byte, error) {

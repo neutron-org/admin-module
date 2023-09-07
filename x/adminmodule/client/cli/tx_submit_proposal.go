@@ -79,7 +79,7 @@ $ %s tx adminmodule submit-proposal --title="Test Proposal" --description="My aw
 
 			content, _ := govv1types.ContentFromProposalType(proposal.Title, proposal.Description, proposal.Type)
 
-			msg, err := types.NewMsgSubmitProposal(content, clientCtx.GetFromAddress())
+			msg, err := types.NewMsgSubmitProposalLegacy(content, clientCtx.GetFromAddress())
 			if err != nil {
 				return fmt.Errorf("invalid message: %w", err)
 			}

@@ -420,22 +420,24 @@ func New(
 		// register the governance hooks
 		),
 	)
-
 	// register the proposal types
-	adminRouter := govv1beta1.NewRouter()
-	adminRouter.AddRoute(govtypes.RouterKey, govv1beta1.ProposalHandler).
+	adminRouterLegacy := govv1beta1.NewRouter()
+	adminRouterLegacy.AddRoute(govtypes.RouterKey, govv1beta1.ProposalHandler).
 		AddRoute(paramproposal.RouterKey, params.NewParamChangeProposalHandler(app.ParamsKeeper)).
 		AddRoute(upgradetypes.RouterKey, upgrade.NewSoftwareUpgradeProposalHandler(&app.UpgradeKeeper)).
 		AddRoute(ibchost.RouterKey, ibcclient.NewClientProposalHandler(app.IBCKeeper.ClientKeeper))
 
+	adminRouter := baseapp.NewMsgServiceRouter()
 	app.AdminmoduleKeeper = *adminmodulemodulekeeper.NewKeeper(
 		appCodec,
 		keys[adminmodulemoduletypes.StoreKey],
 		keys[adminmodulemoduletypes.MemStoreKey],
+		adminRouterLegacy,
 		adminRouter,
 		// this allows any type of proposal to be submitted to the admin module (everything is whitelisted)
 		// projects will implement their functions to define what is allowed for admins.
 		func(govv1beta1.Content) bool { return true },
+		func(msg sdk.Msg) bool { return true },
 	)
 	adminModule := adminmodulemodule.NewAppModule(appCodec, app.AdminmoduleKeeper)
 

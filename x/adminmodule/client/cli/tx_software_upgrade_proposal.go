@@ -45,7 +45,7 @@ func NewCmdSubmitUpgradeProposal() *cobra.Command {
 
 			from := clientCtx.GetFromAddress()
 
-			msg, err := types.NewMsgSubmitProposal(content, from)
+			msg, err := types.NewMsgSubmitProposalLegacy(content, from)
 			if err != nil {
 				return err
 			}
@@ -93,7 +93,7 @@ func NewCmdSubmitCancelUpgradeProposal() *cobra.Command {
 
 			content := upgradetypes.NewCancelSoftwareUpgradeProposal(title, description)
 
-			msg, err := types.NewMsgSubmitProposal(content, from)
+			msg, err := types.NewMsgSubmitProposalLegacy(content, from)
 			if err != nil {
 				return err
 			}

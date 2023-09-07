@@ -4,12 +4,13 @@ import (
 	"fmt"
 
 	"github.com/cometbft/cometbft/libs/log"
+	"github.com/cosmos/cosmos-sdk/baseapp"
 
 	"github.com/cosmos/admin-module/x/adminmodule/types"
 	"github.com/cosmos/cosmos-sdk/codec"
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	govv1types "github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
+	govv1beta1types "github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
 	// this line is used by starport scaffolding # ibc/keeper/import
 )
 
@@ -18,9 +19,10 @@ type (
 		cdc                       codec.Codec
 		storeKey                  storetypes.StoreKey
 		memKey                    storetypes.StoreKey
-		rtr                       govv1types.Router
-		IsProposalTypeWhitelisted func(govv1types.Content) bool
-		// this line is used by starport scaffolding # ibc/keeper/attribute
+		legacyRouter              govv1beta1types.Router
+		msgServiceRouter          *baseapp.MsgServiceRouter
+		isProposalTypeWhitelisted func(govv1beta1types.Content) bool
+		isMessageWhitelisted      func(message sdk.Msg) bool
 	}
 )
 
@@ -28,25 +30,48 @@ func NewKeeper(
 	cdc codec.Codec,
 	storeKey,
 	memKey storetypes.StoreKey,
-	rtr govv1types.Router,
-	isProposalTypeWhitelisted func(govv1types.Content) bool,
-	// this line is used by starport scaffolding # ibc/keeper/parameter
+	legacyRouter govv1beta1types.Router,
+	msgServiceRouter *baseapp.MsgServiceRouter,
+	isProposalTypeWhitelisted func(govv1beta1types.Content) bool,
+	isMessageWhitelisted func(msg sdk.Msg) bool,
 ) *Keeper {
 	return &Keeper{
 		cdc:                       cdc,
 		storeKey:                  storeKey,
 		memKey:                    memKey,
-		rtr:                       rtr,
-		IsProposalTypeWhitelisted: isProposalTypeWhitelisted,
-		// this line is used by starport scaffolding # ibc/keeper/return
+		legacyRouter:              legacyRouter,
+		msgServiceRouter:          msgServiceRouter,
+		isProposalTypeWhitelisted: isProposalTypeWhitelisted,
+		isMessageWhitelisted:      isMessageWhitelisted,
 	}
 }
 
-// Router returns the adminmodule Keeper's Router
-func (k Keeper) Router() govv1types.Router {
-	return k.rtr
+// RouterLegacy returns the adminmodule Keeper's govtypeRouter
+func (k Keeper) RouterLegacy() govv1beta1types.Router {
+	return k.legacyRouter
 }
 
+// Router returns the adminmodule Keeper's Router
+func (k Keeper) Router() *baseapp.MsgServiceRouter {
+	return k.msgServiceRouter
+}
+
+// Logger returns the adminmodule Keeper's Logger
 func (k Keeper) Logger(ctx sdk.Context) log.Logger {
 	return ctx.Logger().With("module", fmt.Sprintf("x/%s", types.ModuleName))
+}
+
+// Codec returns the adminmodule Keeper's Codec
+func (k Keeper) Codec() codec.Codec {
+	return k.cdc
+}
+
+// IsProposalTypeWhitelisted returns the adminmodule Keeper's isProposalTypeWhitelisted
+func (k Keeper) IsProposalTypeWhitelisted() func(govv1beta1types.Content) bool {
+	return k.isProposalTypeWhitelisted
+}
+
+// IsMessageWhitelisted returns the adminmodule Keeper's isMessageWhitelisted
+func (k Keeper) IsMessageWhitelisted() func(msg sdk.Msg) bool {
+	return k.isMessageWhitelisted
 }

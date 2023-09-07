@@ -3,6 +3,7 @@ package cosmos.adminmodule.adminmodule;
 
 import "google/api/annotations.proto";
 import "cosmos/gov/v1beta1/gov.proto";
+import "cosmos/gov/v1/gov.proto";
 
 option go_package = "github.com/cosmos/admin-module/x/adminmodule/types";
 
@@ -19,6 +20,11 @@ service Query {
     option (google.api.http).get = "/cosmos/adminmodule/adminmodule/archivedproposals";
   }
 
+  // Queries a list of archived proposals.
+  rpc ArchivedProposalsLegacy(QueryArchivedProposalsLegacyRequest) returns (QueryArchivedProposalsLegacyResponse) {
+    option (google.api.http).get = "/cosmos/adminmodule/adminmodule/archivedproposalslegacy";
+  }
+
 }
 
 message QueryAdminsRequest {
@@ -31,6 +37,17 @@ message QueryAdminsResponse {
 message QueryArchivedProposalsRequest {
 }
 
+message QueryArchivedProposalsLegacyRequest {
+}
+
+message QueryProposalsResponse {
+  repeated cosmos.gov.v1.Proposal proposals = 1;
+}
+
 message QueryArchivedProposalsResponse {
-  repeated cosmos.gov.v1beta1.Proposal proposals = 1;
+  repeated cosmos.gov.v1.Proposal proposals = 1;
+}
+
+message QueryArchivedProposalsLegacyResponse {
+  repeated cosmos.gov.v1beta1.Proposal proposalsLegacy = 1;
 }

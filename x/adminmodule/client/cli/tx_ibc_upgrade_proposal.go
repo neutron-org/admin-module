@@ -79,7 +79,7 @@ func NewCmdSubmitIbcClientUpgradeProposal() *cobra.Command {
 
 			from := clientCtx.GetFromAddress()
 
-			msg, err := types.NewMsgSubmitProposal(content, from)
+			msg, err := types.NewMsgSubmitProposalLegacy(content, from)
 			if err != nil {
 				return err
 			}

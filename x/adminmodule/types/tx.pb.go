@@ -206,17 +206,102 @@ func (m *MsgAddAdminResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgAddAdminResponse proto.InternalMessageInfo
 
+// MsgSubmitProposalLegacy defines an sdk.Msg type that supports submitting arbitrary
+// proposal Content.
+type MsgSubmitProposalLegacy struct {
+	Content  *types.Any `protobuf:"bytes,1,opt,name=content,proto3" json:"content,omitempty"`
+	Proposer string     `protobuf:"bytes,2,opt,name=proposer,proto3" json:"proposer,omitempty"`
+}
+
+func (m *MsgSubmitProposalLegacy) Reset()      { *m = MsgSubmitProposalLegacy{} }
+func (*MsgSubmitProposalLegacy) ProtoMessage() {}
+func (*MsgSubmitProposalLegacy) Descriptor() ([]byte, []int) {
+	return fileDescriptor_55c2d463b72a29fc, []int{4}
+}
+func (m *MsgSubmitProposalLegacy) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgSubmitProposalLegacy) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgSubmitProposalLegacy.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgSubmitProposalLegacy) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgSubmitProposalLegacy.Merge(m, src)
+}
+func (m *MsgSubmitProposalLegacy) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgSubmitProposalLegacy) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgSubmitProposalLegacy.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgSubmitProposalLegacy proto.InternalMessageInfo
+
+// MsgSubmitProposalLegacyResponse defines the Msg/SubmitProposalLegacy response type.
+type MsgSubmitProposalLegacyResponse struct {
+	ProposalId uint64 `protobuf:"varint,1,opt,name=proposal_id,json=proposalId,proto3" json:"proposal_id" yaml:"proposal_id"`
+}
+
+func (m *MsgSubmitProposalLegacyResponse) Reset()         { *m = MsgSubmitProposalLegacyResponse{} }
+func (m *MsgSubmitProposalLegacyResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgSubmitProposalLegacyResponse) ProtoMessage()    {}
+func (*MsgSubmitProposalLegacyResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_55c2d463b72a29fc, []int{5}
+}
+func (m *MsgSubmitProposalLegacyResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgSubmitProposalLegacyResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgSubmitProposalLegacyResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgSubmitProposalLegacyResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgSubmitProposalLegacyResponse.Merge(m, src)
+}
+func (m *MsgSubmitProposalLegacyResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgSubmitProposalLegacyResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgSubmitProposalLegacyResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgSubmitProposalLegacyResponse proto.InternalMessageInfo
+
+func (m *MsgSubmitProposalLegacyResponse) GetProposalId() uint64 {
+	if m != nil {
+		return m.ProposalId
+	}
+	return 0
+}
+
 // MsgSubmitProposal defines an sdk.Msg type that supports submitting arbitrary
 // proposal Content.
 type MsgSubmitProposal struct {
-	Content  *types.Any `protobuf:"bytes,1,opt,name=content,proto3" json:"content,omitempty"`
-	Proposer string     `protobuf:"bytes,2,opt,name=proposer,proto3" json:"proposer,omitempty"`
+	// messages are the arbitrary messages to be executed if proposal passes.
+	Messages []*types.Any `protobuf:"bytes,1,rep,name=messages,proto3" json:"messages,omitempty"`
+	Proposer string       `protobuf:"bytes,2,opt,name=proposer,proto3" json:"proposer,omitempty"`
 }
 
 func (m *MsgSubmitProposal) Reset()      { *m = MsgSubmitProposal{} }
 func (*MsgSubmitProposal) ProtoMessage() {}
 func (*MsgSubmitProposal) Descriptor() ([]byte, []int) {
-	return fileDescriptor_55c2d463b72a29fc, []int{4}
+	return fileDescriptor_55c2d463b72a29fc, []int{6}
 }
 func (m *MsgSubmitProposal) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -254,7 +339,7 @@ func (m *MsgSubmitProposalResponse) Reset()         { *m = MsgSubmitProposalResp
 func (m *MsgSubmitProposalResponse) String() string { return proto.CompactTextString(m) }
 func (*MsgSubmitProposalResponse) ProtoMessage()    {}
 func (*MsgSubmitProposalResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_55c2d463b72a29fc, []int{5}
+	return fileDescriptor_55c2d463b72a29fc, []int{7}
 }
 func (m *MsgSubmitProposalResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -295,6 +380,8 @@ func init() {
 	proto.RegisterType((*MsgDeleteAdminResponse)(nil), "cosmos.adminmodule.adminmodule.MsgDeleteAdminResponse")
 	proto.RegisterType((*MsgAddAdmin)(nil), "cosmos.adminmodule.adminmodule.MsgAddAdmin")
 	proto.RegisterType((*MsgAddAdminResponse)(nil), "cosmos.adminmodule.adminmodule.MsgAddAdminResponse")
+	proto.RegisterType((*MsgSubmitProposalLegacy)(nil), "cosmos.adminmodule.adminmodule.MsgSubmitProposalLegacy")
+	proto.RegisterType((*MsgSubmitProposalLegacyResponse)(nil), "cosmos.adminmodule.adminmodule.MsgSubmitProposalLegacyResponse")
 	proto.RegisterType((*MsgSubmitProposal)(nil), "cosmos.adminmodule.adminmodule.MsgSubmitProposal")
 	proto.RegisterType((*MsgSubmitProposalResponse)(nil), "cosmos.adminmodule.adminmodule.MsgSubmitProposalResponse")
 }
@@ -304,36 +391,39 @@ func init() {
 }
 
 var fileDescriptor_55c2d463b72a29fc = []byte{
-	// 449 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x52, 0x4f, 0xce, 0x2f, 0xce,
-	0xcd, 0x2f, 0xd6, 0x4f, 0x4c, 0xc9, 0xcd, 0xcc, 0xcb, 0xcd, 0x4f, 0x29, 0xcd, 0x49, 0x45, 0x61,
-	0x97, 0x54, 0xe8, 0x15, 0x14, 0xe5, 0x97, 0xe4, 0x0b, 0xc9, 0x41, 0x14, 0xea, 0x21, 0x49, 0x22,
-	0xb3, 0xa5, 0x44, 0xd2, 0xf3, 0xd3, 0xf3, 0xc1, 0x4a, 0xf5, 0x41, 0x2c, 0x88, 0x2e, 0x29, 0xc9,
-	0xf4, 0xfc, 0xfc, 0xf4, 0x9c, 0x54, 0x7d, 0x30, 0x2f, 0xa9, 0x34, 0x4d, 0x3f, 0x31, 0xaf, 0x12,
-	0x26, 0x05, 0x31, 0x30, 0x1e, 0xa2, 0x07, 0x6a, 0x3a, 0x98, 0xa3, 0xe4, 0xc0, 0xc5, 0xe7, 0x5b,
-	0x9c, 0xee, 0x92, 0x9a, 0x93, 0x5a, 0x92, 0xea, 0x08, 0xb2, 0x43, 0x48, 0x82, 0x8b, 0x3d, 0xb9,
-	0x28, 0x35, 0xb1, 0x24, 0xbf, 0x48, 0x82, 0x51, 0x81, 0x51, 0x83, 0x33, 0x08, 0xc6, 0x15, 0x12,
-	0xe1, 0x62, 0x05, 0x3b, 0x43, 0x82, 0x09, 0x2c, 0x0e, 0xe1, 0x28, 0x49, 0x70, 0x89, 0xa1, 0x9a,
-	0x10, 0x94, 0x5a, 0x5c, 0x90, 0x9f, 0x57, 0x9c, 0xaa, 0x64, 0xcb, 0xc5, 0xed, 0x5b, 0x9c, 0xee,
-	0x98, 0x92, 0x42, 0x9e, 0xc1, 0xa2, 0x5c, 0xc2, 0x48, 0xda, 0xe1, 0xa6, 0xd6, 0x71, 0x09, 0xfa,
-	0x16, 0xa7, 0x07, 0x97, 0x26, 0xe5, 0x66, 0x96, 0x04, 0x14, 0xe5, 0x17, 0xe4, 0x17, 0x27, 0xe6,
-	0x08, 0x59, 0x73, 0xb1, 0x27, 0xe7, 0xe7, 0x95, 0xa4, 0xe6, 0x95, 0x80, 0xcd, 0xe6, 0x36, 0x12,
-	0xd1, 0x83, 0x04, 0x87, 0x1e, 0x2c, 0x38, 0xf4, 0x1c, 0xf3, 0x2a, 0x9d, 0xb8, 0x4f, 0x6d, 0xd1,
-	0x65, 0x77, 0x86, 0x28, 0x0c, 0x82, 0xe9, 0x10, 0x92, 0xe2, 0xe2, 0x28, 0x00, 0x1b, 0x94, 0x5a,
-	0x04, 0x75, 0x01, 0x9c, 0x6f, 0x25, 0xd0, 0xb1, 0x40, 0x9e, 0x61, 0xc6, 0x02, 0x79, 0x86, 0x17,
-	0x0b, 0xe4, 0x19, 0x1a, 0xee, 0x28, 0x30, 0x28, 0x25, 0x73, 0x49, 0x62, 0xd8, 0x0f, 0x73, 0x9c,
-	0x90, 0x1b, 0x17, 0x77, 0x01, 0x54, 0x2c, 0x3e, 0x33, 0x05, 0xec, 0x16, 0x16, 0x27, 0xd5, 0x57,
-	0xf7, 0xe4, 0x91, 0x85, 0x3f, 0xdd, 0x93, 0x17, 0xaa, 0x4c, 0xcc, 0xcd, 0xb1, 0x52, 0x42, 0x12,
-	0x54, 0x0a, 0xe2, 0x82, 0xf1, 0x3c, 0x53, 0x8c, 0x5e, 0x31, 0x71, 0x31, 0xfb, 0x16, 0xa7, 0x0b,
-	0x95, 0x72, 0x71, 0x23, 0xc7, 0x8d, 0x9e, 0x1e, 0xfe, 0xa4, 0xa1, 0x87, 0x1a, 0x13, 0x52, 0x66,
-	0xa4, 0xa9, 0x87, 0x7b, 0x23, 0x87, 0x8b, 0x03, 0x1e, 0x6d, 0xda, 0x44, 0x98, 0x01, 0x53, 0x2c,
-	0x65, 0x4c, 0x82, 0x62, 0xb8, 0x6d, 0x75, 0x5c, 0x7c, 0x68, 0xd1, 0x69, 0x48, 0x84, 0x31, 0xa8,
-	0x5a, 0xa4, 0x2c, 0x49, 0xd6, 0x02, 0xb3, 0xdf, 0xc9, 0xe7, 0xc4, 0x23, 0x39, 0xc6, 0x0b, 0x8f,
-	0xe4, 0x18, 0x1f, 0x3c, 0x92, 0x63, 0x9c, 0xf0, 0x58, 0x8e, 0xe1, 0xc2, 0x63, 0x39, 0x86, 0x1b,
-	0x8f, 0xe5, 0x18, 0xa2, 0x8c, 0xd2, 0x33, 0x4b, 0x32, 0x4a, 0x93, 0xf4, 0x92, 0xf3, 0x73, 0xf5,
-	0x91, 0x73, 0xaf, 0x2e, 0x34, 0xcb, 0x56, 0xa0, 0x66, 0xe0, 0xca, 0x82, 0xd4, 0xe2, 0x24, 0x36,
-	0x70, 0x8a, 0x33, 0x06, 0x04, 0x00, 0x00, 0xff, 0xff, 0x48, 0x78, 0xc1, 0x42, 0xef, 0x03, 0x00,
-	0x00,
+	// 508 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xac, 0x54, 0x3f, 0x8b, 0xd4, 0x40,
+	0x14, 0x4f, 0x5c, 0x75, 0xd7, 0x17, 0x38, 0x74, 0x5c, 0x35, 0x97, 0x22, 0x59, 0x02, 0xa2, 0x20,
+	0x37, 0xd1, 0x3d, 0x50, 0x3c, 0x11, 0xdd, 0x55, 0x04, 0xe1, 0x16, 0x24, 0x76, 0x36, 0x47, 0x36,
+	0x19, 0xc7, 0x40, 0x92, 0x09, 0x99, 0x04, 0x2e, 0x8d, 0x58, 0x58, 0x58, 0x5e, 0x69, 0xb9, 0x1f,
+	0xc2, 0x0f, 0x21, 0x56, 0x57, 0x5a, 0xc8, 0x21, 0xbb, 0x8d, 0x58, 0xda, 0x0b, 0x72, 0x93, 0x4d,
+	0x48, 0x3c, 0x4f, 0x2e, 0xcb, 0x75, 0xf3, 0x66, 0x7e, 0xff, 0x5e, 0xf2, 0x66, 0xe0, 0x86, 0xcb,
+	0x78, 0xc8, 0xb8, 0xe5, 0x78, 0xa1, 0x1f, 0x85, 0xcc, 0xcb, 0x02, 0xd2, 0x58, 0xa7, 0xbb, 0x38,
+	0x4e, 0x58, 0xca, 0x90, 0x5e, 0x00, 0x71, 0xed, 0xb0, 0xbe, 0xd6, 0xfa, 0x94, 0x51, 0x26, 0xa0,
+	0xd6, 0xe1, 0xaa, 0x60, 0x69, 0xeb, 0x94, 0x31, 0x1a, 0x10, 0x4b, 0x54, 0xd3, 0xec, 0xb5, 0xe5,
+	0x44, 0x79, 0x79, 0x54, 0x08, 0xee, 0x14, 0x9c, 0xa5, 0xba, 0x28, 0xcc, 0xc7, 0xb0, 0x36, 0xe1,
+	0xf4, 0x29, 0x09, 0x48, 0x4a, 0x46, 0x87, 0x1e, 0x48, 0x85, 0xae, 0x9b, 0x10, 0x27, 0x65, 0x89,
+	0x2a, 0x0f, 0xe4, 0x9b, 0x17, 0xec, 0xb2, 0x44, 0x7d, 0x38, 0x27, 0x62, 0xa8, 0x67, 0xc4, 0x7e,
+	0x51, 0x98, 0x2a, 0x5c, 0x6d, 0x2a, 0xd8, 0x84, 0xc7, 0x2c, 0xe2, 0xc4, 0x7c, 0x08, 0xca, 0x84,
+	0xd3, 0x91, 0xe7, 0xad, 0x26, 0x7c, 0x05, 0x2e, 0xd7, 0xe8, 0x95, 0xea, 0x7b, 0x19, 0xae, 0x4d,
+	0x38, 0x7d, 0x99, 0x4d, 0x43, 0x3f, 0x7d, 0x91, 0xb0, 0x98, 0x71, 0x27, 0xd8, 0x26, 0xd4, 0x71,
+	0x73, 0xf4, 0x00, 0xba, 0x2e, 0x8b, 0x52, 0x12, 0xa5, 0xc2, 0x42, 0x19, 0xf6, 0x71, 0xf1, 0x55,
+	0x70, 0xf9, 0x55, 0xf0, 0x28, 0xca, 0xc7, 0xca, 0x97, 0x4f, 0x1b, 0xdd, 0x27, 0x05, 0xd0, 0x2e,
+	0x19, 0x48, 0x83, 0x5e, 0x2c, 0xe4, 0x48, 0xb2, 0x0c, 0x52, 0xd5, 0x5b, 0x17, 0x3f, 0xcc, 0x0c,
+	0xe9, 0xe3, 0xcc, 0x90, 0x7e, 0xcc, 0x0c, 0xe9, 0xdd, 0xb7, 0x81, 0x64, 0xfa, 0x60, 0x1c, 0x93,
+	0xa2, 0x4c, 0x8a, 0x9e, 0x81, 0x12, 0x2f, 0x4f, 0x76, 0x7c, 0x4f, 0x24, 0x3a, 0x3b, 0xbe, 0xfe,
+	0xf3, 0xc0, 0xa8, 0x6f, 0xff, 0x3a, 0x30, 0x50, 0xee, 0x84, 0xc1, 0x96, 0x59, 0xdb, 0x34, 0x6d,
+	0x28, 0xab, 0xe7, 0x9e, 0xc9, 0xe1, 0xd2, 0x11, 0x2b, 0x74, 0x1b, 0x7a, 0x21, 0xe1, 0xdc, 0xa1,
+	0x84, 0xab, 0xf2, 0xa0, 0x73, 0x5c, 0xaf, 0x76, 0x85, 0x6a, 0xd9, 0x9f, 0x0b, 0xeb, 0x47, 0x4c,
+	0x4f, 0xbb, 0xb3, 0xe1, 0xef, 0x0e, 0x74, 0x26, 0x9c, 0xa2, 0x0c, 0x94, 0xfa, 0x08, 0x62, 0xfc,
+	0xff, 0x1b, 0x80, 0x9b, 0x03, 0xa7, 0xdd, 0x6d, 0x87, 0xaf, 0xda, 0x08, 0xa0, 0x57, 0x4d, 0xe7,
+	0xad, 0x13, 0x68, 0x94, 0x60, 0x6d, 0xb3, 0x05, 0xb8, 0x72, 0x7b, 0x0b, 0x6b, 0x7f, 0xfd, 0xc3,
+	0x3b, 0x27, 0x90, 0x69, 0x52, 0xb4, 0xfb, 0xad, 0x29, 0x95, 0xff, 0x9e, 0x0c, 0xfd, 0x7f, 0xde,
+	0x9a, 0x7b, 0xad, 0x35, 0x0b, 0xa2, 0xf6, 0x68, 0x45, 0x62, 0x19, 0x69, 0xbc, 0xfd, 0x79, 0xae,
+	0xcb, 0xfb, 0x73, 0x5d, 0xfe, 0x3e, 0xd7, 0xe5, 0xbd, 0x85, 0x2e, 0xed, 0x2f, 0x74, 0xe9, 0xeb,
+	0x42, 0x97, 0x5e, 0x0d, 0xa9, 0x9f, 0xbe, 0xc9, 0xa6, 0xd8, 0x65, 0xa1, 0x55, 0x7f, 0x37, 0x37,
+	0x96, 0x8f, 0xe5, 0x6e, 0xf3, 0xe9, 0xcc, 0x63, 0xc2, 0xa7, 0xe7, 0xc5, 0xe0, 0x6f, 0xfe, 0x09,
+	0x00, 0x00, 0xff, 0xff, 0x5e, 0x3a, 0x9b, 0x8c, 0x69, 0x05, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -351,6 +441,7 @@ type MsgClient interface {
 	DeleteAdmin(ctx context.Context, in *MsgDeleteAdmin, opts ...grpc.CallOption) (*MsgDeleteAdminResponse, error)
 	AddAdmin(ctx context.Context, in *MsgAddAdmin, opts ...grpc.CallOption) (*MsgAddAdminResponse, error)
 	SubmitProposal(ctx context.Context, in *MsgSubmitProposal, opts ...grpc.CallOption) (*MsgSubmitProposalResponse, error)
+	SubmitProposalLegacy(ctx context.Context, in *MsgSubmitProposalLegacy, opts ...grpc.CallOption) (*MsgSubmitProposalLegacyResponse, error)
 }
 
 type msgClient struct {
@@ -388,11 +479,21 @@ func (c *msgClient) SubmitProposal(ctx context.Context, in *MsgSubmitProposal, o
 	return out, nil
 }
 
+func (c *msgClient) SubmitProposalLegacy(ctx context.Context, in *MsgSubmitProposalLegacy, opts ...grpc.CallOption) (*MsgSubmitProposalLegacyResponse, error) {
+	out := new(MsgSubmitProposalLegacyResponse)
+	err := c.cc.Invoke(ctx, "/cosmos.adminmodule.adminmodule.Msg/SubmitProposalLegacy", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // MsgServer is the server API for Msg service.
 type MsgServer interface {
 	DeleteAdmin(context.Context, *MsgDeleteAdmin) (*MsgDeleteAdminResponse, error)
 	AddAdmin(context.Context, *MsgAddAdmin) (*MsgAddAdminResponse, error)
 	SubmitProposal(context.Context, *MsgSubmitProposal) (*MsgSubmitProposalResponse, error)
+	SubmitProposalLegacy(context.Context, *MsgSubmitProposalLegacy) (*MsgSubmitProposalLegacyResponse, error)
 }
 
 // UnimplementedMsgServer can be embedded to have forward compatible implementations.
@@ -407,6 +508,9 @@ func (*UnimplementedMsgServer) AddAdmin(ctx context.Context, req *MsgAddAdmin) (
 }
 func (*UnimplementedMsgServer) SubmitProposal(ctx context.Context, req *MsgSubmitProposal) (*MsgSubmitProposalResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SubmitProposal not implemented")
+}
+func (*UnimplementedMsgServer) SubmitProposalLegacy(ctx context.Context, req *MsgSubmitProposalLegacy) (*MsgSubmitProposalLegacyResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SubmitProposalLegacy not implemented")
 }
 
 func RegisterMsgServer(s grpc1.Server, srv MsgServer) {
@@ -467,6 +571,24 @@ func _Msg_SubmitProposal_Handler(srv interface{}, ctx context.Context, dec func(
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Msg_SubmitProposalLegacy_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgSubmitProposalLegacy)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).SubmitProposalLegacy(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/cosmos.adminmodule.adminmodule.Msg/SubmitProposalLegacy",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).SubmitProposalLegacy(ctx, req.(*MsgSubmitProposalLegacy))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var _Msg_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "cosmos.adminmodule.adminmodule.Msg",
 	HandlerType: (*MsgServer)(nil),
@@ -482,6 +604,10 @@ var _Msg_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "SubmitProposal",
 			Handler:    _Msg_SubmitProposal_Handler,
+		},
+		{
+			MethodName: "SubmitProposalLegacy",
+			Handler:    _Msg_SubmitProposalLegacy_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
@@ -608,6 +734,76 @@ func (m *MsgAddAdminResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
+func (m *MsgSubmitProposalLegacy) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgSubmitProposalLegacy) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgSubmitProposalLegacy) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Proposer) > 0 {
+		i -= len(m.Proposer)
+		copy(dAtA[i:], m.Proposer)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Proposer)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if m.Content != nil {
+		{
+			size, err := m.Content.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintTx(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgSubmitProposalLegacyResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgSubmitProposalLegacyResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgSubmitProposalLegacyResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.ProposalId != 0 {
+		i = encodeVarintTx(dAtA, i, uint64(m.ProposalId))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
 func (m *MsgSubmitProposal) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
@@ -635,17 +831,19 @@ func (m *MsgSubmitProposal) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i--
 		dAtA[i] = 0x12
 	}
-	if m.Content != nil {
-		{
-			size, err := m.Content.MarshalToSizedBuffer(dAtA[:i])
-			if err != nil {
-				return 0, err
+	if len(m.Messages) > 0 {
+		for iNdEx := len(m.Messages) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.Messages[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintTx(dAtA, i, uint64(size))
 			}
-			i -= size
-			i = encodeVarintTx(dAtA, i, uint64(size))
+			i--
+			dAtA[i] = 0xa
 		}
-		i--
-		dAtA[i] = 0xa
 	}
 	return len(dAtA) - i, nil
 }
@@ -741,7 +939,7 @@ func (m *MsgAddAdminResponse) Size() (n int) {
 	return n
 }
 
-func (m *MsgSubmitProposal) Size() (n int) {
+func (m *MsgSubmitProposalLegacy) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -750,6 +948,37 @@ func (m *MsgSubmitProposal) Size() (n int) {
 	if m.Content != nil {
 		l = m.Content.Size()
 		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.Proposer)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	return n
+}
+
+func (m *MsgSubmitProposalLegacyResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.ProposalId != 0 {
+		n += 1 + sovTx(uint64(m.ProposalId))
+	}
+	return n
+}
+
+func (m *MsgSubmitProposal) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if len(m.Messages) > 0 {
+		for _, e := range m.Messages {
+			l = e.Size()
+			n += 1 + l + sovTx(uint64(l))
+		}
 	}
 	l = len(m.Proposer)
 	if l > 0 {
@@ -1104,7 +1333,7 @@ func (m *MsgAddAdminResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *MsgSubmitProposal) Unmarshal(dAtA []byte) error {
+func (m *MsgSubmitProposalLegacy) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -1127,10 +1356,10 @@ func (m *MsgSubmitProposal) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgSubmitProposal: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgSubmitProposalLegacy: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgSubmitProposal: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgSubmitProposalLegacy: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -1166,6 +1395,191 @@ func (m *MsgSubmitProposal) Unmarshal(dAtA []byte) error {
 				m.Content = &types.Any{}
 			}
 			if err := m.Content.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Proposer", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Proposer = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgSubmitProposalLegacyResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgSubmitProposalLegacyResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgSubmitProposalLegacyResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ProposalId", wireType)
+			}
+			m.ProposalId = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.ProposalId |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgSubmitProposal) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgSubmitProposal: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgSubmitProposal: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Messages", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Messages = append(m.Messages, &types.Any{})
+			if err := m.Messages[len(m.Messages)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
