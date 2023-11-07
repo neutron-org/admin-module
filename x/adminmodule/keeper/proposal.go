@@ -30,7 +30,7 @@ func (k Keeper) SubmitProposal(ctx sdk.Context, msgs []sdk.Msg) (govv1types.Prop
 		var res *sdk.Result
 		res, err := handler(ctx, msg)
 		if err != nil {
-			return proposal, fmt.Errorf("failed to handle %d msg in proposal %d: %w", idx, proposal.Id, err)
+			return proposal, fmt.Errorf("failed to handle %s msg #%d in proposal: %w", msg, idx, err)
 		}
 		events = append(events, res.GetEvents()...)
 	}
