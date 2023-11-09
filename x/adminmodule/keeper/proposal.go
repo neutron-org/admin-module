@@ -34,10 +34,13 @@ func (k Keeper) SubmitProposal(ctx sdk.Context, msgs []sdk.Msg) (govv1types.Prop
 		}
 		events = append(events, res.GetEvents()...)
 	}
+
 	proposal.Status = govv1types.StatusPassed
 	k.SetProposal(ctx, proposal)
 	k.SetProposalID(ctx, proposalID+1)
 	k.AddToArchive(ctx, proposal)
+
+	ctx.EventManager().EmitEvents(events)
 
 	return proposal, nil
 }
