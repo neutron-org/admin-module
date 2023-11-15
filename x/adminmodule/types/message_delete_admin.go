@@ -14,14 +14,6 @@ func NewMsgDeleteAdmin(creator, admin sdk.AccAddress) *MsgDeleteAdmin {
 	}
 }
 
-func (msg *MsgDeleteAdmin) Route() string {
-	return RouterKey
-}
-
-func (msg *MsgDeleteAdmin) Type() string {
-	return "DeleteAdmin"
-}
-
 func (msg *MsgDeleteAdmin) GetSigners() []sdk.AccAddress {
 	creator, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {

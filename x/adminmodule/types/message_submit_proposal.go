@@ -1,15 +1,12 @@
 package types
 
 import (
-	"fmt"
-
-	"github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	sdktx "github.com/cosmos/cosmos-sdk/types/tx"
 
 	cdctypes "github.com/cosmos/cosmos-sdk/codec/types"
-	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
-	"github.com/gogo/protobuf/proto"
+	"github.com/cosmos/cosmos-sdk/x/gov/codec"
 	"gopkg.in/yaml.v2"
 )
 
@@ -18,37 +15,23 @@ var (
 	_ cdctypes.UnpackInterfacesMessage = &MsgSubmitProposal{}
 )
 
-func NewMsgSubmitProposal(content govtypes.Content, proposer sdk.AccAddress) (*MsgSubmitProposal, error) {
+func NewMsgSubmitProposal(messages []sdk.Msg, proposer sdk.AccAddress) (*MsgSubmitProposal, error) {
 	m := &MsgSubmitProposal{
 		Proposer: proposer.String(),
 	}
 
-	err := m.SetContent(content)
+	anys, err := sdktx.SetMsgs(messages)
 	if err != nil {
 		return nil, err
 	}
+
+	m.Messages = anys
 	return m, nil
 }
 
-func (m *MsgSubmitProposal) GetContent() govtypes.Content {
-	content, ok := m.Content.GetCachedValue().(govtypes.Content)
-	if !ok {
-		return nil
-	}
-	return content
-}
-
-func (m *MsgSubmitProposal) SetContent(content govtypes.Content) error {
-	msg, ok := content.(proto.Message)
-	if !ok {
-		return fmt.Errorf("can't proto marshal %T", msg)
-	}
-	any, err := types.NewAnyWithValue(msg)
-	if err != nil {
-		return err
-	}
-	m.Content = any
-	return nil
+// GetMsgs unpacks m.Messages Any's into sdk.Msg's
+func (m *MsgSubmitProposal) GetMsgs() ([]sdk.Msg, error) {
+	return sdktx.GetMsgs(m.Messages, "sdk.Msg")
 }
 
 func (m *MsgSubmitProposal) Route() string {
@@ -67,8 +50,9 @@ func (m *MsgSubmitProposal) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{proposer}
 }
 
-func (m *MsgSubmitProposal) GetSignBytes() []byte {
-	bz := govtypes.ModuleCdc.MustMarshalJSON(m)
+// GetSignBytes returns the message bytes to sign over.
+func (msg MsgSubmitProposal) GetSignBytes() []byte {
+	bz := codec.ModuleCdc.MustMarshalJSON(&msg)
 	return sdk.MustSortJSON(bz)
 }
 
@@ -81,24 +65,14 @@ func (m *MsgSubmitProposal) String() string {
 // ValidateBasic implements Msg
 func (m *MsgSubmitProposal) ValidateBasic() error {
 	if m.Proposer == "" {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, m.Proposer)
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "proposer are empty")
 	}
-
-	content := m.GetContent()
-	if content == nil {
-		return sdkerrors.Wrap(govtypes.ErrInvalidProposalContent, "missing content")
+	if len(m.Messages) == 0 {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "messages are empty")
 	}
-	if !govtypes.IsValidProposalType(content.ProposalType()) {
-		return sdkerrors.Wrap(govtypes.ErrInvalidProposalType, content.ProposalType())
-	}
-	if err := content.ValidateBasic(); err != nil {
-		return err
-	}
-
 	return nil
 }
 
 func (m MsgSubmitProposal) UnpackInterfaces(unpacker cdctypes.AnyUnpacker) error {
-	var content govtypes.Content
-	return unpacker.UnpackAny(m.Content, &content)
+	return sdktx.UnpackInterfaces(unpacker, m.Messages)
 }

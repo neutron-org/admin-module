@@ -4,7 +4,7 @@ import (
 	"github.com/cosmos/admin-module/x/adminmodule/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/tx"
-	clienttypes "github.com/cosmos/ibc-go/v3/modules/core/02-client/types"
+	clienttypes "github.com/cosmos/ibc-go/v7/modules/core/02-client/types"
 	"github.com/spf13/cobra"
 )
 
@@ -39,7 +39,7 @@ func NewCmdSubmitUpdateClientProposal() *cobra.Command {
 
 			from := clientCtx.GetFromAddress()
 
-			msg, err := types.NewMsgSubmitProposal(content, from)
+			msg, err := types.NewMsgSubmitProposalLegacy(content, from)
 			if err != nil {
 				return err
 			}

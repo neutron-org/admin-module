@@ -22,13 +22,16 @@ const (
 
 	AdminKey = "Admin-"
 
-	ArchiveKey = "Archive-"
+	ArchiveKey = "ArchiveSdk47-"
+
+	ArchiveLegacyKey = "Archive-"
 )
 
 var (
-	ProposalsKeyPrefix        = []byte{0x00}
-	ActiveProposalQueuePrefix = []byte{0x01}
-	ProposalIDKey             = []byte{0x03}
+	ProposalsKeyLegacyPrefix = []byte{0x00}
+	ProposalIDKeyLegacy      = []byte{0x03}
+	ProposalsKeyPrefix       = []byte{0x04}
+	ProposalIDKey            = []byte{0x06}
 )
 
 // GetProposalIDBytes returns the byte representation of the proposalID
@@ -48,7 +51,7 @@ func ProposalKey(proposalID uint64) []byte {
 	return append(ProposalsKeyPrefix, GetProposalIDBytes(proposalID)...)
 }
 
-// ActiveProposalQueueKey returns the key for a proposalID in the activeProposalQueue
-func ActiveProposalQueueKey(proposalID uint64) []byte {
-	return append(ActiveProposalQueuePrefix, GetProposalIDBytes(proposalID)...)
+// ProposalLegacyKey gets a specific proposal from the store
+func ProposalLegacyKey(proposalID uint64) []byte {
+	return append(ProposalsKeyLegacyPrefix, GetProposalIDBytes(proposalID)...)
 }

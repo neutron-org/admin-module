@@ -12,8 +12,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/client/tx"
 	"github.com/cosmos/cosmos-sdk/codec"
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
-	clienttypes "github.com/cosmos/ibc-go/v3/modules/core/02-client/types"
-	"github.com/cosmos/ibc-go/v3/modules/core/exported"
+	clienttypes "github.com/cosmos/ibc-go/v7/modules/core/02-client/types"
+	"github.com/cosmos/ibc-go/v7/modules/core/exported"
 )
 
 // NewCmdSubmitUpgradeProposal implements a command handler for submitting an upgrade IBC client proposal transaction.
@@ -79,7 +79,7 @@ func NewCmdSubmitIbcClientUpgradeProposal() *cobra.Command {
 
 			from := clientCtx.GetFromAddress()
 
-			msg, err := types.NewMsgSubmitProposal(content, from)
+			msg, err := types.NewMsgSubmitProposalLegacy(content, from)
 			if err != nil {
 				return err
 			}

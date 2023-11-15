@@ -69,7 +69,7 @@ Where proposal.json contains:
 				proposal.Title, proposal.Description, proposal.Changes.ToParamChanges(),
 			)
 
-			msg, err := types.NewMsgSubmitProposal(content, from)
+			msg, err := types.NewMsgSubmitProposalLegacy(content, from)
 			if err != nil {
 				return err
 			}

@@ -10,7 +10,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/tx"
 	"github.com/cosmos/cosmos-sdk/x/gov/client/cli"
-	gov "github.com/cosmos/cosmos-sdk/x/gov/types"
+	govv1types "github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
 )
 
@@ -45,7 +45,7 @@ func NewCmdSubmitUpgradeProposal() *cobra.Command {
 
 			from := clientCtx.GetFromAddress()
 
-			msg, err := types.NewMsgSubmitProposal(content, from)
+			msg, err := types.NewMsgSubmitProposalLegacy(content, from)
 			if err != nil {
 				return err
 			}
@@ -93,7 +93,7 @@ func NewCmdSubmitCancelUpgradeProposal() *cobra.Command {
 
 			content := upgradetypes.NewCancelSoftwareUpgradeProposal(title, description)
 
-			msg, err := types.NewMsgSubmitProposal(content, from)
+			msg, err := types.NewMsgSubmitProposalLegacy(content, from)
 			if err != nil {
 				return err
 			}
@@ -114,7 +114,7 @@ func NewCmdSubmitCancelUpgradeProposal() *cobra.Command {
 	return cmd
 }
 
-func parseArgsToContent(cmd *cobra.Command, name string) (gov.Content, error) {
+func parseArgsToContent(cmd *cobra.Command, name string) (govv1types.Content, error) {
 	title, err := cmd.Flags().GetString(cli.FlagTitle)
 	if err != nil {
 		return nil, err
