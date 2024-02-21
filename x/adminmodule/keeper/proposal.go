@@ -3,9 +3,9 @@ package keeper
 import (
 	"fmt"
 
+	sdkerrors "cosmossdk.io/errors"
 	"github.com/cosmos/admin-module/x/adminmodule/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	govv1types "github.com/cosmos/cosmos-sdk/x/gov/types/v1"
 )
 
@@ -19,7 +19,17 @@ func (k Keeper) SubmitProposal(ctx sdk.Context, msgs []sdk.Msg) (govv1types.Prop
 
 	headerTime := ctx.BlockHeader().Time
 
-	proposal, err := govv1types.NewProposal(msgs, proposalID, headerTime, headerTime, "", "", "", nil)
+	proposal, err := govv1types.NewProposal(
+		msgs,
+		proposalID,
+		headerTime,
+		headerTime,
+		"",
+		"",
+		"",
+		nil,
+		false,
+	)
 	if err != nil {
 		return govv1types.Proposal{}, err
 	}

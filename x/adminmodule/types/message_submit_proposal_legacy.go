@@ -3,12 +3,12 @@ package types
 import (
 	"fmt"
 
+	sdkerrors "cosmossdk.io/errors"
 	"github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	sdkerrortypes "github.com/cosmos/cosmos-sdk/types/errors"
 
 	cdctypes "github.com/cosmos/cosmos-sdk/codec/types"
-	govcodec "github.com/cosmos/cosmos-sdk/x/gov/codec"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	govtypesv1b1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
 	"github.com/cosmos/gogoproto/proto"
@@ -62,7 +62,7 @@ func (m *MsgSubmitProposalLegacy) GetSigners() []sdk.AccAddress {
 }
 
 func (m *MsgSubmitProposalLegacy) GetSignBytes() []byte {
-	bz := govcodec.ModuleCdc.MustMarshalJSON(m)
+	bz := ModuleCdc.MustMarshalJSON(m)
 	return sdk.MustSortJSON(bz)
 }
 
@@ -74,7 +74,7 @@ func (m *MsgSubmitProposalLegacy) String() string {
 
 func (m *MsgSubmitProposalLegacy) ValidateBasic() error {
 	if m.Proposer == "" {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "missinng proposer")
+		return sdkerrors.Wrap(sdkerrortypes.ErrInvalidAddress, "missinng proposer")
 	}
 
 	content := m.GetContent()

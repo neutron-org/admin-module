@@ -9,7 +9,7 @@ import (
 	"github.com/cosmos/admin-module/x/adminmodule/types"
 	"github.com/cosmos/cosmos-sdk/telemetry"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	sdkerrortypes "github.com/cosmos/cosmos-sdk/types/errors"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 )
@@ -35,7 +35,7 @@ func (k msgServer) SubmitProposal(goCtx context.Context, msg *types.MsgSubmitPro
 			return nil, fmt.Errorf("should be only 1 signer in message, received: %s", msg.GetSigners())
 		}
 		if !signers[0].Equals(authority) {
-			return nil, errors.Wrap(sdkerrors.ErrorInvalidSigner, signers[0].String())
+			return nil, errors.Wrap(sdkerrortypes.ErrorInvalidSigner, signers[0].String())
 		}
 		if !k.Keeper.isMessageWhitelisted(msg) {
 			return nil, fmt.Errorf("sdk.Msg is not whitelisted: %s", msg)
