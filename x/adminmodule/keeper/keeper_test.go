@@ -9,6 +9,7 @@ import (
 	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	"github.com/cosmos/admin-module/x/adminmodule/keeper"
 	"github.com/cosmos/admin-module/x/adminmodule/types"
+	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/codec"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	"github.com/cosmos/cosmos-sdk/store"
@@ -27,6 +28,8 @@ func setupKeeper(t testing.TB) (*keeper.Keeper, sdk.Context) {
 	rtr := govv1types.NewRouter()
 	rtr.AddRoute(govtypes.RouterKey, govv1types.ProposalHandler)
 
+	adminRouter := baseapp.NewMsgServiceRouter()
+
 	db := tmdb.NewMemDB()
 	stateStore := store.NewCommitMultiStore(db)
 	stateStore.MountStoreWithDB(storeKey, storetypes.StoreTypeIAVL, db)
@@ -42,7 +45,9 @@ func setupKeeper(t testing.TB) (*keeper.Keeper, sdk.Context) {
 		storeKey,
 		memStoreKey,
 		rtr,
+		adminRouter,
 		func(govv1types.Content) bool { return true },
+		func(msg sdk.Msg) bool { return true },
 	)
 	ctx := sdk.NewContext(stateStore, tmproto.Header{}, false, log.NewNopLogger())
 	return k, ctx
