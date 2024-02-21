@@ -24,10 +24,10 @@ func TestGetSetProposal(t *testing.T) {
 	keeper.SetProposalID(sdk.UnwrapSDKContext(ctx), 1)
 
 	tp := TestProposal
-	proposal, err := keeper.SubmitProposal(sdk.UnwrapSDKContext(ctx), tp)
+	proposal, err := keeper.SubmitProposalLegacy(sdk.UnwrapSDKContext(ctx), tp)
 	require.NoError(t, err)
 	proposalID := proposal.ProposalId
-	keeper.SetProposal(sdk.UnwrapSDKContext(ctx), proposal)
+	keeper.SetProposalLegacy(sdk.UnwrapSDKContext(ctx), proposal)
 
 	gotProposal, ok := keeper.GetProposal(sdk.UnwrapSDKContext(ctx), proposalID)
 	require.True(t, ok)
@@ -55,7 +55,7 @@ func TestSubmitProposal(t *testing.T) {
 	}
 
 	for i, tc := range testCases {
-		_, err := keeper.SubmitProposal(sdk.UnwrapSDKContext(ctx), tc.content)
+		_, err := keeper.SubmitProposalLegacy(sdk.UnwrapSDKContext(ctx), tc.content)
 		require.True(t, errors.Is(tc.expectedErr, err), "tc #%d; got: %v, expected: %v", i, err, tc.expectedErr)
 	}
 }

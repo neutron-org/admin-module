@@ -4,6 +4,7 @@ import (
 	"cosmossdk.io/store/metrics"
 	"fmt"
 	dbm "github.com/cosmos/cosmos-db"
+	"github.com/cosmos/cosmos-sdk/baseapp"
 	"testing"
 
 	"cosmossdk.io/log"
@@ -24,9 +25,9 @@ func setupKeeper(t testing.TB) (*keeper.Keeper, sdk.Context) {
 	storeKey := storetypes.NewKVStoreKey(types.StoreKey)
 	memStoreKey := storetypes.NewMemoryStoreKey(types.MemStoreKey)
 
-	// TODO Add more routes
-	rtr := govv1types.NewRouter()
-	rtr.AddRoute(govtypes.RouterKey, govv1types.ProposalHandler)
+	rtr := baseapp.NewMsgServiceRouter()
+	adminRouterLegacy := govv1types.NewRouter()
+	adminRouterLegacy.AddRoute(govtypes.RouterKey, govv1types.ProposalHandler)
 
 	db := dbm.NewMemDB()
 	stateStore := store.NewCommitMultiStore(db, log.NewNopLogger(), metrics.NewNoOpMetrics())
@@ -35,15 +36,16 @@ func setupKeeper(t testing.TB) (*keeper.Keeper, sdk.Context) {
 	require.NoError(t, stateStore.LoadLatestVersion())
 
 	registry := codectypes.NewInterfaceRegistry()
-	//cdc := codec.NewProtoCodec(registry)
-
 	types.RegisterInterfaces(registry)
+
 	k := keeper.NewKeeper(
 		codec.NewProtoCodec(registry),
 		storeKey,
 		memStoreKey,
+		adminRouterLegacy,
 		rtr,
 		func(govv1types.Content) bool { return true },
+		func(msg sdk.Msg) bool { return true },
 	)
 	ctx := sdk.NewContext(stateStore, tmproto.Header{}, false, log.NewNopLogger())
 	return k, ctx
