@@ -9,9 +9,7 @@ import (
 )
 
 func TestAddAdmin(t *testing.T) {
-	// queryClient := suite.queryClient
-	// keeper, ctx := setupKeeper(t)
-	msgServer, ctx, keeper := setupMsgServer(t)
+	msgServer, ctx, keeper := setupMsgServer()
 
 	var (
 		req          *types.QueryAdminsRequest
