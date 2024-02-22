@@ -18,7 +18,7 @@ func TestAddToArchive(t *testing.T) {
 
 	keeper.AddToArchiveLegacy(sdk.UnwrapSDKContext(ctx), proposal)
 
-	proposals := keeper.GetArchivedProposals(sdk.UnwrapSDKContext(ctx))
+	proposals := keeper.GetArchivedProposalsLegacy(sdk.UnwrapSDKContext(ctx))
 	require.True(t, len(proposals) == 1)
 
 	//TODO(zavgorodnii)

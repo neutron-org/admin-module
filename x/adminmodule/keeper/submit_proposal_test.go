@@ -21,7 +21,7 @@ func TestGetSetProposal(t *testing.T) {
 	_, ctx, keeper := setupMsgServer(t)
 
 	// Init genesis ProposalID
-	keeper.SetProposalID(sdk.UnwrapSDKContext(ctx), 1)
+	keeper.SetProposalIDLegacy(sdk.UnwrapSDKContext(ctx), 1)
 
 	tp := TestProposal
 	proposal, err := keeper.SubmitProposalLegacy(sdk.UnwrapSDKContext(ctx), tp)
@@ -29,7 +29,7 @@ func TestGetSetProposal(t *testing.T) {
 	proposalID := proposal.ProposalId
 	keeper.SetProposalLegacy(sdk.UnwrapSDKContext(ctx), proposal)
 
-	gotProposal, ok := keeper.GetProposal(sdk.UnwrapSDKContext(ctx), proposalID)
+	gotProposal, ok := keeper.GetProposalLegacy(sdk.UnwrapSDKContext(ctx), proposalID)
 	require.True(t, ok)
 	require.True(t, proposal.Equal(gotProposal))
 }
@@ -38,7 +38,7 @@ func TestSubmitProposal(t *testing.T) {
 	_, ctx, keeper := setupMsgServer(t)
 
 	// Init genesis ProposalID
-	keeper.SetProposalID(sdk.UnwrapSDKContext(ctx), 1)
+	keeper.SetProposalIDLegacy(sdk.UnwrapSDKContext(ctx), 1)
 
 	testCases := []struct {
 		content     govv1beta1types.Content
