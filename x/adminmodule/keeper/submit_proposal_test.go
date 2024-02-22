@@ -11,19 +11,19 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-var TestProposal = govv1beta1types.NewTextProposal("Test", "description")
+var TestProposalLegacy = govv1beta1types.NewTextProposal("Test", "description")
 
-type invalidProposalRoute struct{ govv1beta1types.TextProposal }
+type invalidProposalLegacyRoute struct{ govv1beta1types.TextProposal }
 
-func (invalidProposalRoute) ProposalRoute() string { return "nonexistingroute" }
+func (invalidProposalLegacyRoute) ProposalRoute() string { return "nonexistingroute" }
 
-func TestGetSetProposal(t *testing.T) {
+func TestGetSetProposalLegacy(t *testing.T) {
 	_, ctx, keeper := setupMsgServer(t)
 
 	// Init genesis ProposalID
 	keeper.SetProposalIDLegacy(sdk.UnwrapSDKContext(ctx), 1)
 
-	tp := TestProposal
+	tp := TestProposalLegacy
 	proposal, err := keeper.SubmitProposalLegacy(sdk.UnwrapSDKContext(ctx), tp)
 	require.NoError(t, err)
 	proposalID := proposal.ProposalId
@@ -34,7 +34,7 @@ func TestGetSetProposal(t *testing.T) {
 	require.True(t, proposal.Equal(gotProposal))
 }
 
-func TestSubmitProposal(t *testing.T) {
+func TestSubmitProposalLegacy(t *testing.T) {
 	_, ctx, keeper := setupMsgServer(t)
 
 	// Init genesis ProposalID
@@ -46,12 +46,12 @@ func TestSubmitProposal(t *testing.T) {
 	}{
 		{&govv1beta1types.TextProposal{Title: "title", Description: "description"}, nil},
 		// Keeper does not check the validity of title and description, no error
-		{&govv1beta1types.TextProposal{Title: "", Description: "description"}, nil},
-		{&govv1beta1types.TextProposal{Title: strings.Repeat("1234567890", 100), Description: "description"}, nil},
-		{&govv1beta1types.TextProposal{Title: "title", Description: ""}, nil},
+		{&govv1beta1types.TextProposal{Title: "", Description: "description"}, govtypes.ErrInvalidProposalContent},
+		{&govv1beta1types.TextProposal{Title: strings.Repeat("1234567890", 100), Description: "description"}, govtypes.ErrInvalidProposalContent},
+		{&govv1beta1types.TextProposal{Title: "title", Description: ""}, govtypes.ErrInvalidProposalContent},
 		{&govv1beta1types.TextProposal{Title: "title", Description: strings.Repeat("1234567890", 1000)}, nil},
 		// error only when invalid route
-		{&invalidProposalRoute{}, govtypes.ErrNoProposalHandlerExists},
+		{&invalidProposalLegacyRoute{}, govtypes.ErrNoProposalHandlerExists},
 	}
 
 	for i, tc := range testCases {
