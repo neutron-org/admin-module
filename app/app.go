@@ -147,6 +147,7 @@ var (
 		authtypes.FeeCollectorName:     nil,
 		distrtypes.ModuleName:          nil,
 		minttypes.ModuleName:           {authtypes.Minter},
+		banktypes.ModuleName:           {authtypes.Minter},
 		stakingtypes.BondedPoolName:    {authtypes.Burner, authtypes.Staking},
 		stakingtypes.NotBondedPoolName: {authtypes.Burner, authtypes.Staking},
 		govtypes.ModuleName:            {authtypes.Burner},
@@ -176,7 +177,7 @@ type App struct {
 	*baseapp.BaseApp
 
 	cdc               *codec.LegacyAmino
-	appCodec          codec.Codec
+	AppCodec          codec.Codec
 	interfaceRegistry types.InterfaceRegistry
 
 	invCheckPeriod uint
@@ -251,6 +252,7 @@ func New(
 		minttypes.StoreKey, distrtypes.StoreKey, slashingtypes.StoreKey,
 		govtypes.StoreKey, paramstypes.StoreKey, ibchost.StoreKey, upgradetypes.StoreKey,
 		evidencetypes.StoreKey, ibctransfertypes.StoreKey, capabilitytypes.StoreKey, feegrant.StoreKey,
+		consensusparamtypes.StoreKey, crisistypes.StoreKey,
 		// this line is used by starport scaffolding # stargate/app/storeKey
 		adminmodulemoduletypes.StoreKey,
 	)
@@ -260,7 +262,7 @@ func New(
 	app := &App{
 		BaseApp:           bApp,
 		cdc:               legacyAmino,
-		appCodec:          appCodec,
+		AppCodec:          appCodec,
 		interfaceRegistry: interfaceRegistry,
 		invCheckPeriod:    invCheckPeriod,
 		keys:              keys,
@@ -435,13 +437,12 @@ func New(
 		AddRoute(paramproposal.RouterKey, params.NewParamChangeProposalHandler(app.ParamsKeeper)).
 		AddRoute(ibchost.RouterKey, ibcclient.NewClientProposalHandler(app.IBCKeeper.ClientKeeper))
 
-	adminRouter := baseapp.NewMsgServiceRouter()
 	app.AdminmoduleKeeper = *adminmodulemodulekeeper.NewKeeper(
 		appCodec,
 		keys[adminmodulemoduletypes.StoreKey],
 		keys[adminmodulemoduletypes.MemStoreKey],
 		adminRouterLegacy,
-		adminRouter,
+		app.MsgServiceRouter(),
 		// this allows any type of proposal to be submitted to the admin module (everything is whitelisted)
 		// projects will implement their functions to define what is allowed for admins.
 		func(govv1beta1.Content) bool { return true },
@@ -568,7 +569,7 @@ func New(
 	)
 
 	app.mm.RegisterInvariants(&app.CrisisKeeper)
-	app.configurator = module.NewConfigurator(app.appCodec, app.MsgServiceRouter(), app.GRPCQueryRouter())
+	app.configurator = module.NewConfigurator(app.AppCodec, app.MsgServiceRouter(), app.GRPCQueryRouter())
 
 	err := app.mm.RegisterServices(app.configurator)
 	if err != nil {
@@ -640,7 +641,7 @@ func (app *App) InitChainer(ctx sdk.Context, req *abci.RequestInitChain) (*abci.
 	if err := tmjson.Unmarshal(req.AppStateBytes, &genesisState); err != nil {
 		panic(err)
 	}
-	return app.mm.InitGenesis(ctx, app.appCodec, genesisState)
+	return app.mm.InitGenesis(ctx, app.AppCodec, genesisState)
 }
 
 // LoadHeight loads a particular height

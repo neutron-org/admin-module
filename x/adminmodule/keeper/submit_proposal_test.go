@@ -1,61 +1,43 @@
 package keeper_test
 
 import (
-	"errors"
-	"strings"
 	"testing"
 
+	"github.com/cometbft/cometbft/proto/tendermint/types"
+	"github.com/cosmos/admin-module/app"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
-	govv1beta1types "github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
+	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	"github.com/stretchr/testify/require"
 )
 
-var TestProposalLegacy = govv1beta1types.NewTextProposal("Test", "description")
+func TestGetSetProposal(t *testing.T) {
+	testApp := app.GetTestApp()
+	keeper := testApp.AdminmoduleKeeper
+	bankKeeper := testApp.BankKeeper
 
-type invalidProposalLegacyRoute struct{ govv1beta1types.TextProposal }
+	acc1 := sdk.AccAddress("acc1")
+	acc2 := sdk.AccAddress("acc2")
+	coins := sdk.NewCoins(sdk.NewInt64Coin("denom", 10))
 
-func (invalidProposalLegacyRoute) ProposalRoute() string { return "nonexistingroute" }
+	ctx := testApp.NewContext(false, types.Header{})
 
-func TestGetSetProposalLegacy(t *testing.T) {
-	_, ctx, keeper := setupMsgServer(t)
+	keeper.SetProposalID(sdk.UnwrapSDKContext(ctx), 1)
 
-	// Init genesis ProposalID
-	keeper.SetProposalIDLegacy(sdk.UnwrapSDKContext(ctx), 1)
+	if err := bankKeeper.MintCoins(ctx, banktypes.ModuleName, coins); err != nil {
+		t.Fatal(err.Error())
+	}
 
-	tp := TestProposalLegacy
-	proposal, err := keeper.SubmitProposalLegacy(sdk.UnwrapSDKContext(ctx), tp)
+	if err := bankKeeper.SendCoinsFromModuleToAccount(ctx, banktypes.ModuleName, acc1, coins); err != nil {
+		t.Fatal(err.Error())
+	}
+
+	msgs := []sdk.Msg{banktypes.NewMsgSend(acc1, acc2, coins)}
+	proposal, err := keeper.SubmitProposal(sdk.UnwrapSDKContext(ctx), msgs)
 	require.NoError(t, err)
-	proposalID := proposal.ProposalId
-	keeper.SetProposalLegacy(sdk.UnwrapSDKContext(ctx), proposal)
 
-	gotProposal, ok := keeper.GetProposalLegacy(sdk.UnwrapSDKContext(ctx), proposalID)
+	proposalID := proposal.Id
+
+	gotProposal, ok := keeper.GetProposal(sdk.UnwrapSDKContext(ctx), proposalID)
 	require.True(t, ok)
-	require.True(t, proposal.Equal(gotProposal))
-}
-
-func TestSubmitProposalLegacy(t *testing.T) {
-	_, ctx, keeper := setupMsgServer(t)
-
-	// Init genesis ProposalID
-	keeper.SetProposalIDLegacy(sdk.UnwrapSDKContext(ctx), 1)
-
-	testCases := []struct {
-		content     govv1beta1types.Content
-		expectedErr error
-	}{
-		{&govv1beta1types.TextProposal{Title: "title", Description: "description"}, nil},
-		// Keeper does not check the validity of title and description, no error
-		{&govv1beta1types.TextProposal{Title: "", Description: "description"}, govtypes.ErrInvalidProposalContent},
-		{&govv1beta1types.TextProposal{Title: strings.Repeat("1234567890", 100), Description: "description"}, govtypes.ErrInvalidProposalContent},
-		{&govv1beta1types.TextProposal{Title: "title", Description: ""}, govtypes.ErrInvalidProposalContent},
-		{&govv1beta1types.TextProposal{Title: "title", Description: strings.Repeat("1234567890", 1000)}, nil},
-		// error only when invalid route
-		{&invalidProposalLegacyRoute{}, govtypes.ErrNoProposalHandlerExists},
-	}
-
-	for i, tc := range testCases {
-		_, err := keeper.SubmitProposalLegacy(sdk.UnwrapSDKContext(ctx), tc.content)
-		require.True(t, errors.Is(tc.expectedErr, err), "tc #%d; got: %v, expected: %v", i, err, tc.expectedErr)
-	}
+	require.Equal(t, proposal, gotProposal)
 }

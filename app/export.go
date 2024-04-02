@@ -30,7 +30,7 @@ func (app *App) ExportAppStateAndValidators(
 		app.prepForZeroHeightGenesis(ctx, jailAllowedAddrs)
 	}
 
-	genState, err := app.mm.ExportGenesisForModules(ctx, app.appCodec, modulesToExport)
+	genState, err := app.mm.ExportGenesisForModules(ctx, app.AppCodec, modulesToExport)
 	if err != nil {
 		return servertypes.ExportedApp{}, errors.Wrap(err, "failed to ExportGenesisForModules")
 	}
