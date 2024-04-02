@@ -1,10 +1,8 @@
 package keeper_test
 
 import (
-	"cosmossdk.io/store/metrics"
 	"fmt"
 
-	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	"github.com/cosmos/admin-module/app"
 	"github.com/cosmos/admin-module/x/adminmodule/keeper"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -12,7 +10,7 @@ import (
 
 func setupKeeper() (*keeper.Keeper, sdk.Context) {
 	testApp := app.GetTestApp()
-	return &testApp.AdminmoduleKeeper, testApp.BaseApp.NewContext(false, tmproto.Header{})
+	return &testApp.AdminmoduleKeeper, testApp.BaseApp.NewContext(false)
 }
 
 // Using for setting admins before tests

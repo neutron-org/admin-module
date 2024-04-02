@@ -3,7 +3,6 @@ package keeper_test
 import (
 	"testing"
 
-	"github.com/cometbft/cometbft/proto/tendermint/types"
 	"github.com/cosmos/admin-module/app"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
@@ -19,7 +18,7 @@ func TestGetSetProposal(t *testing.T) {
 	acc2 := sdk.AccAddress("acc2")
 	coins := sdk.NewCoins(sdk.NewInt64Coin("denom", 10))
 
-	ctx := testApp.NewContext(false, types.Header{})
+	ctx := testApp.NewContext(false)
 
 	keeper.SetProposalID(sdk.UnwrapSDKContext(ctx), 1)
 
