@@ -7,7 +7,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/baseapp"
 
 	storetypes "cosmossdk.io/store/types"
-	"github.com/cosmos/admin-module/x/adminmodule/types"
+	"github.com/cosmos/admin-module/v2/x/adminmodule/types"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	govv1beta1types "github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"

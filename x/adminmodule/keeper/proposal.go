@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	sdkerrors "cosmossdk.io/errors"
-	"github.com/cosmos/admin-module/x/adminmodule/types"
+	"github.com/cosmos/admin-module/v2/x/adminmodule/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	govv1types "github.com/cosmos/cosmos-sdk/x/gov/types/v1"
 )

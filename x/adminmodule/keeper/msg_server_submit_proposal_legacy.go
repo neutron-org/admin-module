@@ -3,12 +3,11 @@ package keeper
 import (
 	"context"
 	"errors"
-
 	"fmt"
 
 	cosmoserrors "cosmossdk.io/errors"
 	"cosmossdk.io/store/prefix"
-	"github.com/cosmos/admin-module/x/adminmodule/types"
+	"github.com/cosmos/admin-module/v2/x/adminmodule/types"
 	"github.com/cosmos/cosmos-sdk/telemetry"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"

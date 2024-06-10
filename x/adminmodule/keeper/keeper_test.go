@@ -3,8 +3,8 @@ package keeper_test
 import (
 	"fmt"
 
-	"github.com/cosmos/admin-module/app"
-	"github.com/cosmos/admin-module/x/adminmodule/keeper"
+	"github.com/cosmos/admin-module/v2/app"
+	"github.com/cosmos/admin-module/v2/x/adminmodule/keeper"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 

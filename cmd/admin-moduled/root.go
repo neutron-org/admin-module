@@ -1,9 +1,12 @@
 package main
 
 import (
+	"errors"
+	"io"
+	"os"
+
 	"cosmossdk.io/log"
 	confixcmd "cosmossdk.io/tools/confix/cmd"
-	"errors"
 	tmcfg "github.com/cometbft/cometbft/config"
 	dbm "github.com/cosmos/cosmos-db"
 	"github.com/cosmos/cosmos-sdk/client"
@@ -24,11 +27,9 @@ import (
 	genutilcli "github.com/cosmos/cosmos-sdk/x/genutil/client/cli"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-	"io"
-	"os"
 
-	"github.com/cosmos/admin-module/app"
-	"github.com/cosmos/admin-module/app/params"
+	"github.com/cosmos/admin-module/v2/app"
+	"github.com/cosmos/admin-module/v2/app/params"
 )
 
 // NewRootCmd creates a new root command for admin-moduled. It is called once in the

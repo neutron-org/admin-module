@@ -2,10 +2,10 @@ package keeper
 
 import (
 	"context"
+	"fmt"
 
 	"cosmossdk.io/store/prefix"
-	"fmt"
-	"github.com/cosmos/admin-module/x/adminmodule/types"
+	"github.com/cosmos/admin-module/v2/x/adminmodule/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 

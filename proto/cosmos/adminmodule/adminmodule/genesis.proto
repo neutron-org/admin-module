@@ -3,7 +3,7 @@ package cosmos.adminmodule.adminmodule;
 
 import "gogoproto/gogo.proto";
 
-option go_package = "github.com/cosmos/admin-module/x/adminmodule/types";
+option go_package = "github.com/cosmos/admin-module/v2/x/adminmodule/types";
 
 // GenesisState defines the adminmodule module's genesis state.
 message GenesisState {

@@ -3,7 +3,7 @@ package keeper_test
 import (
 	"testing"
 
-	"github.com/cosmos/admin-module/app"
+	"github.com/cosmos/admin-module/v2/app"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	"github.com/stretchr/testify/require"

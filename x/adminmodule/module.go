@@ -1,6 +1,8 @@
 package adminmodule
 
 import (
+	// this line is used by starport scaffolding # ibc/module/import
+	"context"
 	"encoding/json"
 	"fmt"
 
@@ -11,17 +13,14 @@ import (
 
 	abci "github.com/cometbft/cometbft/abci/types"
 
-	"github.com/cosmos/admin-module/x/adminmodule/client/cli"
-	"github.com/cosmos/admin-module/x/adminmodule/keeper"
-	"github.com/cosmos/admin-module/x/adminmodule/types"
+	"github.com/cosmos/admin-module/v2/x/adminmodule/client/cli"
+	"github.com/cosmos/admin-module/v2/x/adminmodule/keeper"
+	"github.com/cosmos/admin-module/v2/x/adminmodule/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/codec"
 	cdctypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
-
-	// this line is used by starport scaffolding # ibc/module/import
-	"context"
 
 	govclient "github.com/cosmos/cosmos-sdk/x/gov/client"
 )

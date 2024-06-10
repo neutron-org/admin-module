@@ -1,7 +1,7 @@
 package cli
 
 import (
-	"github.com/cosmos/admin-module/x/adminmodule/types"
+	"github.com/cosmos/admin-module/v2/x/adminmodule/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/tx"
 	clienttypes "github.com/cosmos/ibc-go/v8/modules/core/02-client/types"

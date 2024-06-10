@@ -1,7 +1,7 @@
 package keeper
 
 import (
-	"github.com/cosmos/admin-module/x/adminmodule/types"
+	"github.com/cosmos/admin-module/v2/x/adminmodule/types"
 )
 
 type msgServer struct {

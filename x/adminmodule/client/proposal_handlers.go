@@ -1,7 +1,7 @@
 package client
 
 import (
-	"github.com/cosmos/admin-module/x/adminmodule/client/cli"
+	"github.com/cosmos/admin-module/v2/x/adminmodule/client/cli"
 	govclient "github.com/cosmos/cosmos-sdk/x/gov/client"
 )
 

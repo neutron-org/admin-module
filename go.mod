@@ -1,4 +1,4 @@
-module github.com/cosmos/admin-module
+module github.com/cosmos/admin-module/v2
 
 go 1.21
 

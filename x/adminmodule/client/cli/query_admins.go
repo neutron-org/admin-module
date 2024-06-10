@@ -1,10 +1,11 @@
 package cli
 
 import (
-	"github.com/spf13/cobra"
 	"strconv"
 
-	"github.com/cosmos/admin-module/x/adminmodule/types"
+	"github.com/spf13/cobra"
+
+	"github.com/cosmos/admin-module/v2/x/adminmodule/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 )

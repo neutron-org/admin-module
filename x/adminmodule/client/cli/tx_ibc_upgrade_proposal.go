@@ -8,7 +8,7 @@ import (
 	"github.com/spf13/cobra"
 
 	upgradetypes "cosmossdk.io/x/upgrade/types"
-	"github.com/cosmos/admin-module/x/adminmodule/types"
+	"github.com/cosmos/admin-module/v2/x/adminmodule/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/tx"
 	"github.com/cosmos/cosmos-sdk/codec"

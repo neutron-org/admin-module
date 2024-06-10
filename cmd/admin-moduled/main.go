@@ -3,7 +3,7 @@ package main
 import (
 	"os"
 
-	"github.com/cosmos/admin-module/app"
+	"github.com/cosmos/admin-module/v2/app"
 	svrcmd "github.com/cosmos/cosmos-sdk/server/cmd"
 )
 

@@ -27,5 +27,5 @@ done
 cd ..
 
 # move proto files to the right places
-cp -r github.com/cosmos/admin-module/x/* x/
+cp -r github.com/cosmos/admin-module/v2/x/* x/
 rm -rf github.com

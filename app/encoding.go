@@ -3,7 +3,7 @@ package app
 import (
 	"github.com/cosmos/cosmos-sdk/std"
 
-	"github.com/cosmos/admin-module/app/params"
+	"github.com/cosmos/admin-module/v2/app/params"
 )
 
 // MakeEncodingConfig creates a new EncodingConfig with all modules registered

@@ -5,7 +5,7 @@ import "google/api/annotations.proto";
 import "cosmos/gov/v1beta1/gov.proto";
 import "cosmos/gov/v1/gov.proto";
 
-option go_package = "github.com/cosmos/admin-module/x/adminmodule/types";
+option go_package = "github.com/cosmos/admin-module/v2/x/adminmodule/types";
 
 // Query defines the gRPC querier service.
 service Query {
