@@ -1,9 +1,10 @@
 package keeper
 
 import (
+	"cosmossdk.io/store/prefix"
+	storetypes "cosmossdk.io/store/types"
 	"fmt"
 	"github.com/cosmos/admin-module/x/adminmodule/types"
-	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
@@ -11,7 +12,7 @@ func (k Keeper) GetAdmins(ctx sdk.Context) []string {
 	admins := make([]string, 0)
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), []byte(types.AdminKey))
 
-	iterator := sdk.KVStorePrefixIterator(store, []byte{})
+	iterator := storetypes.KVStorePrefixIterator(store, []byte{})
 	defer iterator.Close()
 
 	for ; iterator.Valid(); iterator.Next() {

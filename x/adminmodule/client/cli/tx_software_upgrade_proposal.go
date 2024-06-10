@@ -6,12 +6,12 @@ import (
 
 	"github.com/spf13/cobra"
 
+	upgradetypes "cosmossdk.io/x/upgrade/types"
 	"github.com/cosmos/admin-module/x/adminmodule/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/tx"
 	"github.com/cosmos/cosmos-sdk/x/gov/client/cli"
 	govv1types "github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
-	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
 )
 
 const (

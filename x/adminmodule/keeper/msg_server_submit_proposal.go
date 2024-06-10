@@ -5,11 +5,11 @@ import (
 	"fmt"
 
 	"cosmossdk.io/errors"
+	"cosmossdk.io/store/prefix"
 	"github.com/cosmos/admin-module/x/adminmodule/types"
-	"github.com/cosmos/cosmos-sdk/store/prefix"
 	"github.com/cosmos/cosmos-sdk/telemetry"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	sdkerrortypes "github.com/cosmos/cosmos-sdk/types/errors"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 )
@@ -30,12 +30,17 @@ func (k msgServer) SubmitProposal(goCtx context.Context, msg *types.MsgSubmitPro
 	}
 
 	for _, msg := range msgs {
-		signers := msg.GetSigners()
-		if len(signers) != 1 {
-			return nil, fmt.Errorf("should be only 1 signer in message, received: %s", msg.GetSigners())
+		signers, _, err := k.cdc.GetMsgV1Signers(msg)
+		if err != nil {
+			return nil, errors.Wrap(err, "failed to get signers for message")
 		}
-		if !signers[0].Equals(authority) {
-			return nil, errors.Wrap(sdkerrors.ErrorInvalidSigner, signers[0].String())
+		if len(signers) != 1 {
+			return nil, fmt.Errorf("should be only 1 signer in message, received: %d", len(signers))
+		}
+
+		signer := sdk.AccAddress(signers[0])
+		if !signer.Equals(authority) {
+			return nil, errors.Wrap(sdkerrortypes.ErrorInvalidSigner, signer.String())
 		}
 		if !k.Keeper.isMessageWhitelisted(msg) {
 			return nil, fmt.Errorf("sdk.Msg is not whitelisted: %s", msg)

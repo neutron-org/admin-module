@@ -1,14 +1,14 @@
 package keeper
 
 import (
+	sdkerrors "cosmossdk.io/errors"
 	"github.com/cosmos/admin-module/x/adminmodule/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	govv1beta1types "github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
 )
 
-// SubmitProposal create new proposal given a content
+// SubmitProposal creates a new proposal given a content
 func (k Keeper) SubmitProposalLegacy(ctx sdk.Context, content govv1beta1types.Content) (govv1beta1types.Proposal, error) {
 	if !k.legacyRouter.HasRoute(content.ProposalRoute()) {
 		return govv1beta1types.Proposal{}, sdkerrors.Wrap(govtypes.ErrNoProposalHandlerExists, content.ProposalRoute())

@@ -1,12 +1,12 @@
 package types
 
 import (
+	sdkerrors "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	sdkerrortypes "github.com/cosmos/cosmos-sdk/types/errors"
 	sdktx "github.com/cosmos/cosmos-sdk/types/tx"
 
 	cdctypes "github.com/cosmos/cosmos-sdk/codec/types"
-	"github.com/cosmos/cosmos-sdk/x/gov/codec"
 	"gopkg.in/yaml.v2"
 )
 
@@ -52,7 +52,7 @@ func (m *MsgSubmitProposal) GetSigners() []sdk.AccAddress {
 
 // GetSignBytes returns the message bytes to sign over.
 func (msg MsgSubmitProposal) GetSignBytes() []byte {
-	bz := codec.ModuleCdc.MustMarshalJSON(&msg)
+	bz := ModuleCdc.MustMarshalJSON(&msg)
 	return sdk.MustSortJSON(bz)
 }
 
@@ -65,10 +65,10 @@ func (m *MsgSubmitProposal) String() string {
 // ValidateBasic implements Msg
 func (m *MsgSubmitProposal) ValidateBasic() error {
 	if m.Proposer == "" {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "proposer are empty")
+		return sdkerrors.Wrap(sdkerrortypes.ErrInvalidAddress, "proposer are empty")
 	}
 	if len(m.Messages) == 0 {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "messages are empty")
+		return sdkerrors.Wrap(sdkerrortypes.ErrInvalidRequest, "messages are empty")
 	}
 	return nil
 }

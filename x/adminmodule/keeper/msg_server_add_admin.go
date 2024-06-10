@@ -5,8 +5,8 @@ import (
 
 	"fmt"
 
+	"cosmossdk.io/store/prefix"
 	"github.com/cosmos/admin-module/x/adminmodule/types"
-	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
