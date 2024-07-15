@@ -31,7 +31,6 @@ import (
 	upgradetypes "cosmossdk.io/x/upgrade/types"
 	tmjson "github.com/cometbft/cometbft/libs/json"
 	adminmodulemodule "github.com/cosmos/admin-module/v2/x/adminmodule"
-	adminmoduleclient "github.com/cosmos/admin-module/v2/x/adminmodule/client"
 	adminmodulemodulekeeper "github.com/cosmos/admin-module/v2/x/adminmodule/keeper"
 	adminmodulemoduletypes "github.com/cosmos/admin-module/v2/x/adminmodule/types"
 	"github.com/cosmos/cosmos-sdk/baseapp"
@@ -134,11 +133,11 @@ var (
 		vesting.AppModuleBasic{},
 		// this line is used by starport scaffolding # stargate/app/moduleBasic
 		adminmodulemodule.NewAppModuleBasic(
-			adminmoduleclient.ParamChangeProposalHandler,
-			adminmoduleclient.SoftwareUpgradeProposalHandler,
-			adminmoduleclient.CancelUpgradeProposalHandler,
-			adminmoduleclient.IBCClientUpdateProposalHandler,
-			adminmoduleclient.IBCClientUpgradeProposalHandler,
+		//adminmoduleclient.ParamChangeProposalHandler,
+		//adminmoduleclient.SoftwareUpgradeProposalHandler,
+		//adminmoduleclient.CancelUpgradeProposalHandler,
+		//adminmoduleclient.IBCClientUpdateProposalHandler,
+		//adminmoduleclient.IBCClientUpgradeProposalHandler,
 		),
 	)
 
