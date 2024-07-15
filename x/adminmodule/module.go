@@ -8,12 +8,9 @@ import (
 
 	// this line is used by starport scaffolding # 1
 	"cosmossdk.io/core/appmodule"
-	"github.com/grpc-ecosystem/grpc-gateway/runtime"
-	"github.com/spf13/cobra"
-
 	abci "github.com/cometbft/cometbft/abci/types"
+	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 
-	"github.com/cosmos/admin-module/v2/x/adminmodule/client/cli"
 	"github.com/cosmos/admin-module/v2/x/adminmodule/keeper"
 	"github.com/cosmos/admin-module/v2/x/adminmodule/types"
 	"github.com/cosmos/cosmos-sdk/client"
@@ -87,18 +84,18 @@ func (AppModuleBasic) RegisterGRPCGatewayRoutes(clientCtx client.Context, mux *r
 }
 
 // GetTxCmd returns the capability module's root tx command.
-func (a AppModuleBasic) GetTxCmd() *cobra.Command {
-	proposalCLIHandlers := make([]*cobra.Command, 0, len(a.proposalHandlers))
-	for _, proposalHandler := range a.proposalHandlers {
-		proposalCLIHandlers = append(proposalCLIHandlers, proposalHandler.CLIHandler())
-	}
-	return cli.GetTxCmd(proposalCLIHandlers)
-}
+//func (a AppModuleBasic) GetTxCmd() *cobra.Command {
+//	proposalCLIHandlers := make([]*cobra.Command, 0, len(a.proposalHandlers))
+//	for _, proposalHandler := range a.proposalHandlers {
+//		proposalCLIHandlers = append(proposalCLIHandlers, proposalHandler.CLIHandler())
+//	}
+//	return cli.GetTxCmd(proposalCLIHandlers)
+//}
 
 // GetQueryCmd returns the capability module's root query command.
-func (AppModuleBasic) GetQueryCmd() *cobra.Command {
-	return cli.GetQueryCmd(types.StoreKey)
-}
+//func (AppModuleBasic) GetQueryCmd() *cobra.Command {
+//	return cli.GetQueryCmd(types.StoreKey)
+//}
 
 // ----------------------------------------------------------------------------
 // AppModule
