@@ -20,10 +20,6 @@ func GetTxCmd(propCmds []*cobra.Command) *cobra.Command {
 		RunE:                       client.ValidateCmd,
 	}
 
-	cmd.AddCommand(CmdDeleteAdmin())
-
-	cmd.AddCommand(CmdAddAdmin())
-
 	cmdSubmitProp := CmdSubmitProposal()
 	for _, propCmd := range propCmds {
 		flags.AddTxFlagsToCmd(propCmd)
