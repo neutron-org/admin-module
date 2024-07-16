@@ -47,7 +47,7 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 				},
 				{
 					RpcMethod: "SubmitProposalLegacy",
-					Skip:      true, // TODO: do we need to remove it? Was it here before?
+					Skip:      true,
 				},
 			},
 			EnhanceCustomCommand: true,
