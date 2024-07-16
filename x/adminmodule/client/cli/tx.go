@@ -7,6 +7,7 @@ import (
 
 	"github.com/cosmos/admin-module/v2/x/adminmodule/types"
 	"github.com/cosmos/cosmos-sdk/client"
+	"github.com/cosmos/cosmos-sdk/client/flags"
 )
 
 // GetTxCmd returns the transaction commands for this module
@@ -19,6 +20,17 @@ func GetTxCmd(propCmds []*cobra.Command) *cobra.Command {
 		RunE:                       client.ValidateCmd,
 	}
 
+	cmd.AddCommand(CmdDeleteAdmin())
+
+	cmd.AddCommand(CmdAddAdmin())
+
+	cmdSubmitProp := CmdSubmitProposal()
+	for _, propCmd := range propCmds {
+		flags.AddTxFlagsToCmd(propCmd)
+		cmdSubmitProp.AddCommand(propCmd)
+	}
+
+	cmd.AddCommand(cmdSubmitProp)
 	// this line is used by starport scaffolding # 1
 
 	return cmd
