@@ -18,6 +18,8 @@ service Msg {
 }
 
 message MsgDeleteAdmin {
+  option (cosmos.msg.v1.signer) = "creator";
+
   string creator = 1;
   string admin = 2;
 }
