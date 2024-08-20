@@ -11,6 +11,8 @@ option go_package = "github.com/cosmos/admin-module/v2/x/adminmodule/types";
 
 // Msg defines the Msg service.
 service Msg {
+  option (cosmos.msg.v1.service) = true;
+
   rpc DeleteAdmin(MsgDeleteAdmin) returns (MsgDeleteAdminResponse);
   rpc AddAdmin(MsgAddAdmin) returns (MsgAddAdminResponse);
   rpc SubmitProposal(MsgSubmitProposal) returns (MsgSubmitProposalResponse);
