@@ -20,6 +20,7 @@ service Msg {
 }
 
 message MsgDeleteAdmin {
+  option (amino.name) = "adminmodule/MsgDeleteAdmin";
   option (cosmos.msg.v1.signer) = "creator";
 
   string creator = 1;
@@ -30,6 +31,7 @@ message MsgDeleteAdminResponse {
 }
 
 message MsgAddAdmin {
+  option (amino.name) = "adminmodule/MsgAddAdmin";
   option (cosmos.msg.v1.signer) = "creator";
 
   string creator = 1;
@@ -42,6 +44,7 @@ message MsgAddAdminResponse {
 // MsgSubmitProposalLegacy defines an sdk.Msg type that supports submitting arbitrary
 // proposal Content.
 message MsgSubmitProposalLegacy {
+  option (amino.name) = "adminmodule/MsgSubmitProposalLegacy";
   option (cosmos.msg.v1.signer) = "proposer";
 
   option (gogoproto.equal)            = false;
@@ -61,6 +64,7 @@ message MsgSubmitProposalLegacyResponse {
 // MsgSubmitProposal defines an sdk.Msg type that supports submitting arbitrary
 // proposal Content.
 message MsgSubmitProposal {
+  option (amino.name) = "adminmodule/MsgSubmitProposal";
   option (cosmos.msg.v1.signer) = "proposer";
 
   option (gogoproto.equal)            = false;
