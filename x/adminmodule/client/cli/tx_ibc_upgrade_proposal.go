@@ -16,7 +16,7 @@ import (
 	"github.com/cosmos/ibc-go/v8/modules/core/exported"
 )
 
-// NewCmdSubmitUpgradeProposal implements a command handler for submitting an upgrade IBC client proposal transaction.
+// NewCmdSubmitIbcClientUpgradeProposal implements a command handler for submitting an upgrade IBC client proposal transaction.
 func NewCmdSubmitIbcClientUpgradeProposal() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "ibc-upgrade [name] [height] [path/to/upgraded_client_state.json] (--title [title] | --description [description]) [flags]",

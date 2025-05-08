@@ -5,15 +5,14 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"github.com/cosmos/admin-module/v2/x/adminmodule/client/cli"
+	"github.com/spf13/cobra"
 
 	// this line is used by starport scaffolding # 1
 	"cosmossdk.io/core/appmodule"
-	"github.com/grpc-ecosystem/grpc-gateway/runtime"
-	"github.com/spf13/cobra"
-
 	abci "github.com/cometbft/cometbft/abci/types"
+	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 
-	"github.com/cosmos/admin-module/v2/x/adminmodule/client/cli"
 	"github.com/cosmos/admin-module/v2/x/adminmodule/keeper"
 	"github.com/cosmos/admin-module/v2/x/adminmodule/types"
 	"github.com/cosmos/cosmos-sdk/client"
@@ -93,11 +92,6 @@ func (a AppModuleBasic) GetTxCmd() *cobra.Command {
 		proposalCLIHandlers = append(proposalCLIHandlers, proposalHandler.CLIHandler())
 	}
 	return cli.GetTxCmd(proposalCLIHandlers)
-}
-
-// GetQueryCmd returns the capability module's root query command.
-func (AppModuleBasic) GetQueryCmd() *cobra.Command {
-	return cli.GetQueryCmd(types.StoreKey)
 }
 
 // ----------------------------------------------------------------------------
