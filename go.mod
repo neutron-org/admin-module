@@ -1,14 +1,11 @@
 module github.com/cosmos/admin-module/v2
 
-go 1.23.2
-
-toolchain go1.24.9
+go 1.24.10
 
 require (
 	github.com/cometbft/cometbft v0.38.17
 	github.com/cometbft/cometbft-db v0.14.1 // indirect
 	github.com/cosmos/cosmos-sdk v0.53.4
-	github.com/golang/protobuf v1.5.4
 	github.com/gorilla/mux v1.8.1 // indirect
 	github.com/grpc-ecosystem/grpc-gateway v1.16.0
 	github.com/spf13/cast v1.9.2
@@ -17,6 +14,7 @@ require (
 	github.com/stretchr/testify v1.10.0
 	google.golang.org/genproto v0.0.0-20241118233622-e639e219e697 // indirect
 	google.golang.org/grpc v1.72.2
+	google.golang.org/protobuf v1.36.8 // indirect
 	gopkg.in/yaml.v2 v2.4.0
 )
 
@@ -35,6 +33,7 @@ require (
 	github.com/cosmos/gogoproto v1.7.0
 	github.com/cosmos/ibc-go/modules/capability v1.0.0
 	github.com/cosmos/ibc-go/v8 v8.1.0
+	github.com/golang/protobuf v1.5.4
 	github.com/spf13/viper v1.20.1
 	google.golang.org/genproto/googleapis/api v0.0.0-20250528174236-200df99c418a
 )
@@ -216,7 +215,6 @@ require (
 	golang.org/x/time v0.8.0 // indirect
 	google.golang.org/api v0.215.0 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20250528174236-200df99c418a // indirect
-	google.golang.org/protobuf v1.36.6 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	gotest.tools/v3 v3.5.2 // indirect
 	nhooyr.io/websocket v1.8.6 // indirect
